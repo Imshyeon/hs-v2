@@ -1,6 +1,9 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
+import Sidebar from "@/components/layout/sidebar";
+import UserActionBtn from "@/components/layout/user-action-btn";
+import Footer from "@/components/layout/footer";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -16,7 +19,20 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={inter.className}>{children}</body>
+      <body className={inter.className}>
+        <div className="flex w-screen h-screen">
+          <Sidebar />
+          <div
+            id="main"
+            className="relative w-full overflow-y-auto bg-yellow-200 p-8 z-0"
+          >
+            {children}
+          </div>
+          <UserActionBtn />
+        </div>
+        {/* Footer가 필요없는 경우.. 고민 후 삭제하자 */}
+        <Footer />
+      </body>
     </html>
   );
 }
