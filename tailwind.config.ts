@@ -16,8 +16,17 @@ const config: Config = {
       backgroundColor: {
         layout: {
           footer: "#E3E9E8",
-          sidebar: "#EDF2F1",
+          sidebar: {
+            default: "#EDF2F1",
+            btn: "#8C8D8D",
+          },
+
           activeBtn: "#CCE8E5",
+        },
+      },
+      fill: {
+        sidebar: {
+          btn: "#8C8D8D",
         },
       },
     },

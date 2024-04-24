@@ -1,11 +1,14 @@
+import SidebarLinkBtn from "../ui/sidebar-link-btn";
+
 export default function Sidebar() {
   return (
-    <nav className="flex-grow-0 flex-shrink w-60 text-center p-8 bg-layout-sidebar z-10">
-      <ul className="flex flex-col gap-5">
-        <li className="bg-white/70 rounded-md p-3 hover:bg-white/90 cursor-pointer">
+    <nav className="flex-grow-0 flex-shrink w-60 text-center p-8 bg-layout-sidebar-default z-10">
+      <SidebarLinkBtn />
+      <ul className="flex flex-col gap-5 mt-8">
+        <li className="rounded-md p-2 hover:font-semibold cursor-pointer">
           Lorem ipsum dolor sit amet consectetur adipisicing elit.
         </li>
-        <li className="bg-white/70 rounded-md p-3 hover:bg-white/90 cursor-pointer">
+        <li className="rounded-md p-2 hover:font-semibold cursor-pointer">
           여행2
         </li>
       </ul>
