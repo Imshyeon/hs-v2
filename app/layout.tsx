@@ -22,10 +22,7 @@ export default function RootLayout({
       <body className={inter.className}>
         <div className="flex w-screen h-screen">
           <Sidebar />
-          <div
-            id="main"
-            className="relative w-full overflow-y-auto bg-yellow-200 p-8 z-0"
-          >
+          <div id="main" className="relative w-full overflow-y-auto p-8 z-0">
             {children}
           </div>
           <UserActionBtn />
