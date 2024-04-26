@@ -20,9 +20,10 @@ const config: Config = {
             default: "#EDF2F1",
             btn: "#8C8D8D",
           },
-
           activeBtn: "#CCE8E5",
         },
+        scheduleInfo: "#F5F5F5",
+        scheduleContentBox: "#F5F5F5",
       },
       fill: {
         sidebar: {
