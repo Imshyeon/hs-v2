@@ -24,11 +24,14 @@ const config: Config = {
         },
         scheduleInfo: "#F5F5F5",
         scheduleContentBox: "#F5F5F5",
+        userProfile: "#F5F5F5",
+        userProfileSaveBtn: "#EDF2F1",
       },
       fill: {
         sidebar: {
           btn: "#8C8D8D",
         },
+        profileGoToBtn: "#CCE8E5",
       },
     },
   },
