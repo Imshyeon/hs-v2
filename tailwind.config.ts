@@ -33,6 +33,9 @@ const config: Config = {
         },
         profileGoToBtn: "#CCE8E5",
       },
+      colors: {
+        error: "#A7D3CB",
+      },
     },
   },
   plugins: [],

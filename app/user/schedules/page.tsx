@@ -3,6 +3,8 @@ import Image from "next/image";
 export default function AllSchedulesPage() {
   return (
     <div className="p-4 mt-2 flex flex-col gap-5">
+      <h1 className="text-3xl font-extrabold">SCHEDULES</h1>
+
       {/* 고정 */}
       <div id="bookmarked">
         <section
