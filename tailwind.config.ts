@@ -26,12 +26,15 @@ const config: Config = {
         scheduleContentBox: "#F5F5F5",
         userProfile: "#F5F5F5",
         userProfileSaveBtn: "#EDF2F1",
+        createScheduleBtn: "#EDF2F1",
+        createScheduleBtn_hover: "#CCE8E5",
       },
       fill: {
         sidebar: {
           btn: "#8C8D8D",
         },
         profileGoToBtn: "#CCE8E5",
+        plusSchedule: "#93DBCC",
       },
       colors: {
         error: "#A7D3CB",
