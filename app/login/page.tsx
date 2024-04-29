@@ -30,7 +30,7 @@ export default function LoginPage() {
                   <span className="text-red-600">*</span>
                 </label>
                 <Field
-                  name="id"
+                  name="user_id"
                   id="id"
                   placeholder="아이디"
                   className="border rounded-xl p-3 w-2/3 focus:outline-none"
@@ -65,7 +65,7 @@ export default function LoginPage() {
           <Link href={"/signup"} className="w-2/3 text-center rounded-xl">
             회원가입하기
           </Link>
-          <Link href={"/account"} className="w-2/3 text-center rounded-xl">
+          <Link href={"/user/account"} className="w-2/3 text-center rounded-xl">
             아이디/비밀번호 찾기
           </Link>
         </div>

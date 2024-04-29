@@ -65,7 +65,7 @@ export default function SignupPage() {
                   <span className="text-red-600">*</span>
                 </label>
                 <Field
-                  name="id"
+                  name="user_id"
                   id="id"
                   placeholder="아이디"
                   className="border rounded-xl p-3 w-2/3 focus:outline-none"
@@ -116,10 +116,10 @@ export default function SignupPage() {
         </Formik>
         <div className="flex flex-col gap-4 items-center">
           <div className="border w-2/3 text-center"></div>
-          <Link href={"login"} className="w-2/3 text-center rounded-xl">
+          <Link href={"/login"} className="w-2/3 text-center rounded-xl">
             로그인하기
           </Link>
-          <Link href={"account"} className="w-2/3 text-center rounded-xl">
+          <Link href={"/user/account"} className="w-2/3 text-center rounded-xl">
             아이디/비밀번호 찾기
           </Link>
         </div>
