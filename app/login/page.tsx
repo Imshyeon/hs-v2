@@ -1,7 +1,8 @@
 // 로그인 페이지
 "use client";
-import { Field, Formik, Form } from "formik";
-import Link from "next/link";
+import UserLinkBtn from "@/components/ui/user-btn";
+import UserInput from "@/components/ui/userInput";
+import { Formik, Form } from "formik";
 
 interface LoginValues {
   user_id: string;
@@ -24,31 +25,19 @@ export default function LoginPage() {
         >
           <Form className="text-center p-3">
             <div className="flex flex-col gap-4 items-center mt-4">
-              <div className="flex flex-col gap-1 w-full items-center">
-                <label htmlFor="id" className="w-2/3 text-left">
-                  아이디
-                  <span className="text-red-600">*</span>
-                </label>
-                <Field
-                  name="user_id"
-                  id="id"
-                  placeholder="아이디"
-                  className="border rounded-xl p-3 w-2/3 focus:outline-none"
-                />
-              </div>
-              <div className="flex flex-col gap-1 w-full items-center">
-                <label htmlFor="password" className="w-2/3 text-left">
-                  비밀번호
-                  <span className="text-red-600">*</span>
-                </label>
-                <Field
-                  name="password"
-                  type="password"
-                  id="password"
-                  placeholder="비밀번호"
-                  className="border rounded-xl w-2/3 p-3 focus:outline-none"
-                />
-              </div>
+              <UserInput
+                id="id"
+                name="user_id"
+                label="아이디"
+                placeholder="아이디를 입력하세요."
+              />
+              <UserInput
+                id="password"
+                name="password"
+                label="비밀번호"
+                placeholder="비밀번호를 입력하세요."
+                type="password"
+              />
             </div>
             <div className="justify-center mt-5">
               <button
@@ -60,15 +49,12 @@ export default function LoginPage() {
             </div>
           </Form>
         </Formik>
-        <div className="flex flex-col gap-4 items-center">
-          <div className="border w-2/3 text-center"></div>
-          <Link href={"/signup"} className="w-2/3 text-center rounded-xl">
-            회원가입하기
-          </Link>
-          <Link href={"/user/account"} className="w-2/3 text-center rounded-xl">
-            아이디/비밀번호 찾기
-          </Link>
-        </div>
+        <UserLinkBtn
+          href1="/signup"
+          title1="회원가입하기"
+          href2="/user/account"
+          title2="아이디/비밀번호 찾기"
+        />
       </div>
     </div>
   );

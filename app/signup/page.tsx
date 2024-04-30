@@ -1,7 +1,8 @@
 // 회원가입 페이지
 "use client";
+import UserLinkBtn from "@/components/ui/user-btn";
+import UserInput from "@/components/ui/userInput";
 import { Field, Formik, Form } from "formik";
-import Link from "next/link";
 
 interface SignupValues {
   email: string;
@@ -34,66 +35,34 @@ export default function SignupPage() {
         >
           <Form className="text-center p-3">
             <div className="flex flex-col gap-4 items-center mt-4">
-              <div className="flex flex-col gap-1 w-full items-center">
-                <label htmlFor="name" className="w-2/3 text-left">
-                  이름
-                  <span className="text-red-600">*</span>
-                </label>
-                <Field
-                  name="name"
-                  placeholder="이름"
-                  id="name"
-                  className="border rounded-xl p-3 w-2/3 focus:outline-none"
-                />
-              </div>
-              <div className="flex flex-col gap-1 w-full items-center">
-                <label htmlFor="email" className="w-2/3 text-left">
-                  이메일
-                  <span className="text-red-600">*</span>
-                </label>
-                <Field
-                  name="email"
-                  type="email"
-                  id="email"
-                  placeholder="user@example.com"
-                  className="border rounded-xl p-3 w-2/3 focus:outline-none"
-                />
-              </div>
-              <div className="flex flex-col gap-1 w-full items-center">
-                <label htmlFor="id" className="w-2/3 text-left">
-                  아이디
-                  <span className="text-red-600">*</span>
-                </label>
-                <Field
-                  name="user_id"
-                  id="id"
-                  placeholder="아이디"
-                  className="border rounded-xl p-3 w-2/3 focus:outline-none"
-                />
-              </div>
-              <div className="flex flex-col gap-1 w-full items-center">
-                <label htmlFor="password" className="w-2/3 text-left">
-                  비밀번호
-                  <span className="text-red-600">*</span>
-                </label>
-                <div className="w-2/3 flex gap-2">
-                  <Field
-                    name="password"
-                    type="password"
-                    id="password"
-                    placeholder="비밀번호"
-                    className="border rounded-xl w-1/2 p-3 focus:outline-none"
-                  />
-                  <Field
-                    name="password_confirm"
-                    type="password"
-                    placeholder="비밀번호 확인"
-                    className="border rounded-xl w-1/2 p-3 focus:outline-none"
-                  />
-                </div>
-              </div>
-
-              <label htmlFor="check" className="">
+              <UserInput
+                id="name"
+                name="name"
+                placeholder="이름"
+                label="이름"
+              />
+              <UserInput
+                id="email"
+                name="email"
+                type="email"
+                placeholder="user@example.com"
+                label="이메일"
+              />
+              <UserInput
+                id="id"
+                name="user_id"
+                placeholder="아이디"
+                label="아이디"
+              />
+              <UserInput
+                id="password"
+                type="password"
+                name="password"
+                placeholder="비밀번호"
+                label="비밀번호"
+                rows={true}
+              />
+              <label htmlFor="check">
                 <Field
                   type="checkbox"
                   name="isChecked"
@@ -114,15 +83,12 @@ export default function SignupPage() {
             </div>
           </Form>
         </Formik>
-        <div className="flex flex-col gap-4 items-center">
-          <div className="border w-2/3 text-center"></div>
-          <Link href={"/login"} className="w-2/3 text-center rounded-xl">
-            로그인하기
-          </Link>
-          <Link href={"/user/account"} className="w-2/3 text-center rounded-xl">
-            아이디/비밀번호 찾기
-          </Link>
-        </div>
+        <UserLinkBtn
+          href1="/login"
+          title1="로그인하기"
+          href2="/user/account"
+          title2="아이디/비밀번호 찾기"
+        />
       </div>
     </div>
   );

@@ -1,16 +1,17 @@
 // 아이디/비밀번호 페이지
 "use client";
-import { Field, Formik, Form } from "formik";
-import Link from "next/link";
+import UserLinkBtn from "@/components/ui/user-btn";
+import UserInput from "@/components/ui/userInput";
+import { Formik, Form } from "formik";
 
 interface AccountValues {
   email?: string;
-  id?: string;
+  user_id?: string;
 }
 
 const initialValues: AccountValues = {
   email: "",
-  id: "",
+  user_id: "",
 };
 
 export default function FindAccountPage() {
@@ -27,18 +28,13 @@ export default function FindAccountPage() {
           >
             <Form className="text-center p-3">
               <div className="flex flex-col gap-4 items-center mt-4">
-                <div className="flex flex-col gap-1 w-full items-center">
-                  <label htmlFor="email" className="w-2/3 text-left">
-                    이메일
-                    <span className="text-red-600">*</span>
-                  </label>
-                  <Field
-                    name="email"
-                    id="email"
-                    placeholder="user@example.com"
-                    className="border rounded-xl p-3 w-2/3 focus:outline-none"
-                  />
-                </div>
+                <UserInput
+                  name="email"
+                  id="email"
+                  type="email"
+                  label="이메일"
+                  placeholder="이메일을 입력하세요."
+                />
               </div>
               <div className="justify-center mt-5">
                 <button
@@ -58,18 +54,12 @@ export default function FindAccountPage() {
           >
             <Form className="text-center p-3">
               <div className="flex flex-col gap-4 items-center mt-4">
-                <div className="flex flex-col gap-1 w-full items-center">
-                  <label htmlFor="id" className="w-2/3 text-left">
-                    아이디
-                    <span className="text-red-600">*</span>
-                  </label>
-                  <Field
-                    name="id"
-                    id="id"
-                    placeholder="아이디"
-                    className="border rounded-xl p-3 w-2/3 focus:outline-none"
-                  />
-                </div>
+                <UserInput
+                  name="user_id"
+                  id="id"
+                  label="아이디"
+                  placeholder="아이디를 입력하세요."
+                />
               </div>
               <div className="justify-center mt-5">
                 <button
@@ -83,15 +73,12 @@ export default function FindAccountPage() {
           </Formik>
         </div>
       </div>
-      <div className="flex flex-col gap-4 items-center mt-4">
-        <div className="border w-2/3 text-center"></div>
-        <Link href={"/login"} className="w-2/3 text-center rounded-xl">
-          로그인하기
-        </Link>
-        <Link href={"/signup"} className="w-2/3 text-center rounded-xl">
-          회원가입하기
-        </Link>
-      </div>
+      <UserLinkBtn
+        href1="/login"
+        title1="로그인하기"
+        href2="/signup"
+        title2="회원가입하기"
+      />
     </div>
   );
 }
