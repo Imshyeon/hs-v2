@@ -3,6 +3,8 @@
 import UserLinkBtn from "@/components/ui/user-btn";
 import UserInput from "@/components/ui/userInput";
 import { Field, Formik, Form } from "formik";
+import { Button } from "@nextui-org/button";
+import { Checkbox } from "@nextui-org/react";
 
 interface SignupValues {
   email: string;
@@ -62,24 +64,25 @@ export default function SignupPage() {
                 label="비밀번호"
                 rows={true}
               />
-              <label htmlFor="check">
-                <Field
-                  type="checkbox"
-                  name="isChecked"
-                  id="check"
-                  className="mr-2 focus:outline-none"
-                />
+              <Field
+                type="checkbox"
+                name="isChecked"
+                as={Checkbox}
+                isRequired
+                id="check"
+                classNames="focus:outline-none"
+              >
                 약관 동의하기
                 <span className="text-red-600">*</span>
-              </label>
+              </Field>
             </div>
             <div className="justify-center mt-5">
-              <button
+              <Button
                 type="submit"
                 className="p-3 bg-signupBtn hover:bg-signupBtn_hover w-2/3 rounded-xl"
               >
                 가입하기
-              </button>
+              </Button>
             </div>
           </Form>
         </Formik>

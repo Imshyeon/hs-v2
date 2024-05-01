@@ -4,6 +4,7 @@ import "./globals.css";
 import Sidebar from "@/components/layout/sidebar";
 import UserActionBtn from "@/components/layout/user-action-btn";
 import Footer from "@/components/layout/footer";
+import { Providers } from "./provider";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -20,15 +21,17 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <div className="flex w-screen h-screen">
-          <Sidebar />
-          <div id="main" className="relative w-full overflow-y-auto p-8 z-0">
-            {children}
+        <Providers>
+          <div className="flex w-screen h-screen">
+            <Sidebar />
+            <div id="main" className="relative w-full overflow-y-auto p-8 z-0">
+              {children}
+            </div>
+            <UserActionBtn />
           </div>
-          <UserActionBtn />
-        </div>
-        {/* Footer가 필요없는 경우.. 고민 후 삭제하자 */}
-        <Footer />
+          {/* Footer가 필요없는 경우.. 고민 후 삭제하자 */}
+          <Footer />
+        </Providers>
       </body>
     </html>
   );

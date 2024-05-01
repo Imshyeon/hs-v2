@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { Button } from "@nextui-org/button";
 
 interface UserLinkBtnProps {
   href1: string;
@@ -15,10 +16,10 @@ export default function UserLinkBtn({
   return (
     <div className="flex flex-col gap-4 items-center">
       <div className="border w-2/3 text-center"></div>
-      <Link href={href1} className="w-2/3 text-center rounded-xl">
+      <Link href={href1} className="text-sm text-center rounded-xl">
         {title1}
       </Link>
-      <Link href={href2} className="w-2/3 text-center rounded-xl">
+      <Link href={href2} className="text-sm text-center rounded-xl">
         {title2}
       </Link>
     </div>

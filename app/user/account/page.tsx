@@ -3,6 +3,7 @@
 import UserLinkBtn from "@/components/ui/user-btn";
 import UserInput from "@/components/ui/userInput";
 import { Formik, Form } from "formik";
+import { Button } from "@nextui-org/react";
 
 interface AccountValues {
   email?: string;
@@ -20,7 +21,7 @@ export default function FindAccountPage() {
       <h1 className="p-4 text-center font-extrabold text-4xl h-fit">
         아이디/비밀번호 찾기
       </h1>
-      <div className="flex gap-1 justify-center w-full">
+      <div className="flex justify-center items-center w-full">
         <div className="w-full border-r-2 p-3">
           <Formik
             initialValues={initialValues}
@@ -32,17 +33,17 @@ export default function FindAccountPage() {
                   name="email"
                   id="email"
                   type="email"
-                  label="이메일"
+                  label="Email"
                   placeholder="이메일을 입력하세요."
                 />
               </div>
               <div className="justify-center mt-5">
-                <button
+                <Button
                   type="submit"
                   className="p-3 bg-signupBtn hover:bg-signupBtn_hover w-2/3 rounded-xl"
                 >
                   아이디 찾기
-                </button>
+                </Button>
               </div>
             </Form>
           </Formik>
@@ -57,17 +58,17 @@ export default function FindAccountPage() {
                 <UserInput
                   name="user_id"
                   id="id"
-                  label="아이디"
+                  label="Id"
                   placeholder="아이디를 입력하세요."
                 />
               </div>
               <div className="justify-center mt-5">
-                <button
+                <Button
                   type="submit"
                   className="p-3 bg-signupBtn hover:bg-signupBtn_hover w-2/3 rounded-xl"
                 >
                   비밀번호 찾기
-                </button>
+                </Button>
               </div>
             </Form>
           </Formik>

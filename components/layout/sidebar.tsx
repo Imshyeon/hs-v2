@@ -1,5 +1,6 @@
 import SidebarLinkBtn from "../ui/sidebar-link-btn";
 import Link from "next/link";
+import { Button } from "@nextui-org/button";
 
 export default function Sidebar() {
   return (
@@ -14,12 +15,14 @@ export default function Sidebar() {
         </li>
       </ul>
       <ul className="absolute inset-x-0 bottom-1 flex flex-col space-y-1">
-        <Link href={"/login"} className="hover:bg-white p-2">
-          로그인/로그아웃
-        </Link>
-        <Link href={"/signup"} className="hover:bg-white p-2">
-          회원가입
-        </Link>
+        <Button className="bg-layout-sidebar hover:bg-white p-2">
+          <Link href={"/login"}>로그인/로그아웃</Link>
+        </Button>
+        <Button className="bg-layout-sidebar hover:bg-white p-2">
+          <Link href={"/signup"} className="hover:bg-white p-2">
+            회원가입
+          </Link>
+        </Button>
       </ul>
     </nav>
   );

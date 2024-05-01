@@ -1,4 +1,4 @@
-import { pl } from "date-fns/locale";
+import { Input } from "@nextui-org/react";
 import { Field } from "formik";
 
 interface UserInputProps {
@@ -30,14 +30,22 @@ export default function UserInput({
             name={name}
             type={type}
             id={id}
+            as={Input}
+            isRequired
+            variant="bordered"
             placeholder={placeholder}
-            className="border rounded-xl w-1/2 p-3 focus:outline-none"
+            size="lg"
+            className="w-1/2 focus:outline-none"
           />
           <Field
             name={`${name}_confirm`}
             type={type}
+            as={Input}
+            isRequired
+            variant="bordered"
             placeholder={`${placeholder} 확인`}
-            className="border rounded-xl w-1/2 p-3 focus:outline-none"
+            size="lg"
+            className="w-1/2 focus:outline-none"
           />
         </div>
       ) : (
@@ -46,7 +54,11 @@ export default function UserInput({
           type={type}
           placeholder={placeholder}
           id={id}
-          className="border rounded-xl p-3 w-2/3 focus:outline-none"
+          as={Input}
+          isRequired
+          variant="bordered"
+          size="lg"
+          className="w-2/3 focus:outline-none"
         />
       )}
     </div>

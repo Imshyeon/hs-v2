@@ -3,6 +3,7 @@
 import UserLinkBtn from "@/components/ui/user-btn";
 import UserInput from "@/components/ui/userInput";
 import { Formik, Form } from "formik";
+import { Button } from "@nextui-org/button";
 
 interface LoginValues {
   user_id: string;
@@ -40,12 +41,12 @@ export default function LoginPage() {
               />
             </div>
             <div className="justify-center mt-5">
-              <button
+              <Button
                 type="submit"
                 className="p-3 bg-signupBtn hover:bg-signupBtn_hover w-2/3 rounded-xl"
               >
                 로그인하기
-              </button>
+              </Button>
             </div>
           </Form>
         </Formik>
