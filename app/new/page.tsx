@@ -3,14 +3,23 @@
 // 참고 : https://codesandbox.io/p/sandbox/formik-fieldarray-materialui-f7rkz?file=%2Fsrc%2Fform.js%3A79%2C28
 
 import { Formik, Form, Field, FieldArray } from "formik";
+import { Button } from "@nextui-org/button";
+import {
+  Input,
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+  DateRangePicker,
+  Textarea,
+} from "@nextui-org/react";
+import { parseDate } from "@internationalized/date";
 import { format } from "date-fns";
 
 interface NewSchedule {
   title: string;
   category: string;
   place: string;
-  start_date: Date | string;
-  end_date: Date | string;
+  date: {};
 
   contents: [
     {
@@ -21,6 +30,7 @@ interface NewSchedule {
           content_id: number;
           detail: string;
           image: File;
+          reference: string;
         }
       ];
     }
@@ -31,8 +41,7 @@ const initialValues: NewSchedule = {
   title: "",
   category: "",
   place: "",
-  start_date: format(new Date(), "yyyy-MM-dd"),
-  end_date: format(new Date(), "yyyy-MM-dd"),
+  date: {},
   contents: [
     {
       id: Math.random(),
@@ -42,6 +51,7 @@ const initialValues: NewSchedule = {
           content_id: Math.random(),
           detail: "",
           image: new File([], "", {}),
+          reference: "",
         },
       ],
     },
@@ -54,40 +64,78 @@ export default function NewSchedulePage() {
         initialValues={initialValues}
         onSubmit={(values) => console.log(values)}
       >
-        {({ values, touched, errors }) => (
+        {({ values, touched, errors, setFieldValue }) => (
           <Form className="flex flex-col">
             <section className="flex flex-col gap-4 p-4 border-b-2">
               <div className="flex gap-2 w-full">
                 <Field
                   type="text"
                   name="title"
+                  as={Input}
+                  isRequired
                   placeholder="제목"
-                  className="border p-2 focus:outline-none rounded-xl w-2/3"
+                  size="lg"
+                  className="focus:outline-none w-2/3"
                 />
                 <Field
                   type="text"
                   name="category"
+                  as={Input}
+                  isRequired
                   placeholder="카테고리"
-                  className="border p-2 focus:outline-none rounded-xl w-1/3"
+                  size="lg"
+                  className="focus:outline-none w-1/3"
                 />
               </div>
               <div className="flex gap-2 w-full">
                 <Field
                   type="text"
                   name="place"
+                  as={Input}
+                  isRequired
                   placeholder="장소"
-                  className="border p-2 focus:outline-none rounded-xl w-1/2"
+                  size="lg"
+                  className="focus:outline-none w-1/2"
                 />
                 <div className="flex gap-1 w-1/2">
                   <Field
-                    type="date"
-                    name="start_date"
-                    className="border p-2 focus:outline-none rounded-xl w-full"
-                  />
-                  <Field
-                    type="date"
-                    name="end_date"
-                    className="border p-2 focus:outline-none rounded-xl w-full"
+                    as={DateRangePicker}
+                    isRequired
+                    selectionType="date"
+                    size="sm"
+                    radius="md"
+                    label="여행 기간"
+                    name={values.date}
+                    className="focus:outline-none w-full"
+                    onChange={(e: {
+                      start: { year: number; month: number; day: number };
+                      end: { year: number; month: number; day: number };
+                    }) => {
+                      const { start, end } = e;
+                      const startDate = new Date(
+                        start.year,
+                        start.month - 1,
+                        start.day
+                      );
+                      const endDate = new Date(
+                        end.year,
+                        end.month - 1,
+                        end.day
+                      );
+
+                      const formattedStartDate = format(
+                        startDate,
+                        "yyyy-MM-dd"
+                      );
+                      const formattedEndDate = format(endDate, "yyyy-MM-dd");
+
+                      setFieldValue("date", {
+                        start: parseDate(formattedStartDate),
+                        end: parseDate(formattedEndDate),
+                      });
+
+                      console.log(values.date);
+                    }}
                   />
                 </div>
               </div>
@@ -106,9 +154,11 @@ export default function NewSchedulePage() {
                       >
                         <Field
                           type="text"
+                          as={Input}
+                          isRequired
                           name={contents_title}
                           placeholder="소제목"
-                          className="p-2 focus:outline-none w-1/2 border-b-2"
+                          className="focus:outline-none w-1/2"
                         />
                         <div className="flex flex-col bg-scheduleContentBox p-4 rounded-xl gap-4">
                           <FieldArray name={`contents.${idx}.content`}>
@@ -117,6 +167,7 @@ export default function NewSchedulePage() {
                                 {content.content.map((value, index) => {
                                   const content_id = `contents[${idx}].content[${index}].content_id`;
                                   const content_detail = `contents[${idx}].content[${index}].detail`;
+                                  const reference = `contents[${idx}].content[${index}].reference`;
                                   return (
                                     <div key={content_id}>
                                       {/* <Field
@@ -148,26 +199,40 @@ export default function NewSchedulePage() {
                                       /> */}
                                       <div className="bg-white border rounded-xl w-full p-2 flex flex-col">
                                         <Field
-                                          as="textarea"
+                                          as={Textarea}
                                           name={content_detail}
+                                          isRequired
                                           placeholder="상세 스케줄 입력"
                                           rows="3"
-                                          className="focus:outline-none w-full resize-none"
+                                          variant="underlined"
+                                          className="focus:outline-none w-full resize-none bg-transparent p-2"
                                         />
-
                                         <div className="flex gap-2 items-center">
-                                          <svg
-                                            xmlns="http://www.w3.org/2000/svg"
-                                            viewBox="0 0 24 24"
-                                            fill="currentColor"
-                                            className="w-5 h-5 fill-slate-400 hover:fill-black cursor-pointer"
-                                          >
-                                            <path
-                                              fillRule="evenodd"
-                                              d="M19.902 4.098a3.75 3.75 0 0 0-5.304 0l-4.5 4.5a3.75 3.75 0 0 0 1.035 6.037.75.75 0 0 1-.646 1.353 5.25 5.25 0 0 1-1.449-8.45l4.5-4.5a5.25 5.25 0 1 1 7.424 7.424l-1.757 1.757a.75.75 0 1 1-1.06-1.06l1.757-1.757a3.75 3.75 0 0 0 0-5.304Zm-7.389 4.267a.75.75 0 0 1 1-.353 5.25 5.25 0 0 1 1.449 8.45l-4.5 4.5a5.25 5.25 0 1 1-7.424-7.424l1.757-1.757a.75.75 0 1 1 1.06 1.06l-1.757 1.757a3.75 3.75 0 1 0 5.304 5.304l4.5-4.5a3.75 3.75 0 0 0-1.035-6.037.75.75 0 0 1-.354-1Z"
-                                              clipRule="evenodd"
-                                            />
-                                          </svg>
+                                          <Popover placement="top" showArrow>
+                                            <PopoverTrigger>
+                                              <svg
+                                                xmlns="http://www.w3.org/2000/svg"
+                                                viewBox="0 0 24 24"
+                                                fill="currentColor"
+                                                className="w-5 h-5 fill-slate-400 hover:fill-black cursor-pointer"
+                                              >
+                                                <path
+                                                  fillRule="evenodd"
+                                                  d="M19.902 4.098a3.75 3.75 0 0 0-5.304 0l-4.5 4.5a3.75 3.75 0 0 0 1.035 6.037.75.75 0 0 1-.646 1.353 5.25 5.25 0 0 1-1.449-8.45l4.5-4.5a5.25 5.25 0 1 1 7.424 7.424l-1.757 1.757a.75.75 0 1 1-1.06-1.06l1.757-1.757a3.75 3.75 0 0 0 0-5.304Zm-7.389 4.267a.75.75 0 0 1 1-.353 5.25 5.25 0 0 1 1.449 8.45l-4.5 4.5a5.25 5.25 0 1 1-7.424-7.424l1.757-1.757a.75.75 0 1 1 1.06 1.06l-1.757 1.757a3.75 3.75 0 1 0 5.304 5.304l4.5-4.5a3.75 3.75 0 0 0-1.035-6.037.75.75 0 0 1-.354-1Z"
+                                                  clipRule="evenodd"
+                                                />
+                                              </svg>
+                                            </PopoverTrigger>
+                                            <PopoverContent className="p-2">
+                                              <Field
+                                                as={Input}
+                                                name={reference}
+                                                id="reference"
+                                                placeholder="참고 웹사이트"
+                                                className="bg-transparent"
+                                              />
+                                            </PopoverContent>
+                                          </Popover>
 
                                           <button
                                             type="button"
@@ -192,16 +257,17 @@ export default function NewSchedulePage() {
                                     </div>
                                   );
                                 })}
-                                <button
+                                <Button
                                   type="button"
                                   onClick={() =>
                                     push({
                                       content_id: Math.random(),
                                       detail: "",
                                       image: null,
+                                      reference: "",
                                     })
                                   }
-                                  className="self-center focus:outline-none mt-3"
+                                  className="self-center focus:outline-none mt-3 bg-transparent p-0"
                                 >
                                   <svg
                                     xmlns="http://www.w3.org/2000/svg"
@@ -215,15 +281,15 @@ export default function NewSchedulePage() {
                                       clipRule="evenodd"
                                     />
                                   </svg>
-                                </button>
+                                </Button>
                               </>
                             )}
                           </FieldArray>
                         </div>
-                        <button
+                        <Button
                           type="button"
                           onClick={() => remove(idx)}
-                          className="absolute right-2"
+                          className="absolute right-2 bg-transparent"
                         >
                           <svg
                             xmlns="http://www.w3.org/2000/svg"
@@ -237,7 +303,7 @@ export default function NewSchedulePage() {
                               clipRule="evenodd"
                             />
                           </svg>
-                        </button>
+                        </Button>
                       </section>
                     );
                   })}
@@ -252,6 +318,7 @@ export default function NewSchedulePage() {
                             content_id: Math.random(),
                             detail: "",
                             image: null,
+                            reference: "",
                           },
                         ],
                       })
@@ -276,12 +343,12 @@ export default function NewSchedulePage() {
                 </div>
               )}
             </FieldArray>
-            <button
+            <Button
               type="submit"
               className="self-end px-5 py-2 bg-createScheduleBtn hover:bg-createScheduleBtn_hover rounded-xl"
             >
               완료
-            </button>
+            </Button>
           </Form>
         )}
       </Formik>
