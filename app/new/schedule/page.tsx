@@ -20,7 +20,7 @@ interface NewSchedule {
   category: string;
   place: string;
   date: {};
-
+  created_date: string;
   contents: [
     {
       id: number;
@@ -44,6 +44,7 @@ const initialValues: NewSchedule = {
   category: "",
   place: "",
   date: {},
+  created_date: new Date().toLocaleDateString(),
   contents: [
     {
       id: Math.random(),

@@ -1,4 +1,5 @@
 // 특정 아티클 페이지
+// Next.js SSR - getArticleDatas
 import { NextPage } from "next";
 import DetailPageInfo from "@/components/detail-page/page-info";
 import EntireContentList from "@/components/detail-page/content/entire-content-list";

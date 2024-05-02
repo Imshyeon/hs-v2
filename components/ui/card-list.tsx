@@ -54,7 +54,7 @@ export default function CardList({
           title={"제목1"}
           category={"유럽/프랑스"}
           date={"2024-04-30"}
-          image={"/pandas.jpeg"}
+          image={""}
         />
       </article>
       <article>

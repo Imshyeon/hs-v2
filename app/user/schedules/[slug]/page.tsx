@@ -1,4 +1,5 @@
 // 유저의 특정 스케줄 페이지
+// Next.js SSR - getScheduleDatas
 import DetailPageInfo from "@/components/detail-page/page-info";
 import { NextPage } from "next";
 import EntireContentList from "@/components/detail-page/content/entire-content-list";

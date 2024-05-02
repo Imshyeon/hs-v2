@@ -4,6 +4,9 @@ import Image from "next/image";
 import Link from "next/link";
 import { Field, Formik, Form } from "formik";
 
+// 유저 정보 - Next.js SSR
+// 유저의 스케줄 정보 - Next.js SSR -> getMarkedSchedules
+
 interface UserProfileInfos {
   image: File;
   name: string;

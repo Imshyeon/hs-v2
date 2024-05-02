@@ -1,4 +1,5 @@
 // 전체 아티클 페이지
+// Next.js SSR - getAllArticles
 import CardList from "@/components/ui/card-list";
 import Pagination from "@/components/ui/pagination";
 
