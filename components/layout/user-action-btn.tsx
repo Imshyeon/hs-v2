@@ -46,7 +46,13 @@ export default function UserActionBtn() {
             className="bg-transparent hover:text-base hover:font-bold"
             onClick={handleClosePopover}
           >
-            <Link href="/new">새로운 스케줄 작성하기</Link>
+            <Link href="/new/schedule">새로운 스케줄 작성하기</Link>
+          </Button>
+          <Button
+            className="bg-transparent hover:text-base hover:font-bold"
+            onClick={handleClosePopover}
+          >
+            <Link href="/new/article">새로운 Article 작성하기</Link>
           </Button>
           <Button
             className="bg-transparent hover:text-base hover:font-bold"

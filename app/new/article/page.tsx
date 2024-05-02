@@ -9,22 +9,22 @@ import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-  DateRangePicker,
   Textarea,
 } from "@nextui-org/react";
+import { DatePicker } from "@nextui-org/date-picker";
 import { parseDate } from "@internationalized/date";
 import { format } from "date-fns";
 
 interface NewSchedule {
   title: string;
   category: string;
-  place: string;
-  date: {};
+  date: string;
 
   contents: [
     {
       id: number;
       content_title: string;
+      content_place?: string;
       content: [
         {
           content_id: number;
@@ -35,17 +35,18 @@ interface NewSchedule {
       ];
     }
   ];
+  hashtags?: string;
 }
 
 const initialValues: NewSchedule = {
   title: "",
   category: "",
-  place: "",
-  date: {},
+  date: format(new Date(), "yyyy-MM-dd"),
   contents: [
     {
       id: Math.random(),
       content_title: "",
+      content_place: "",
       content: [
         {
           content_id: Math.random(),
@@ -56,15 +57,16 @@ const initialValues: NewSchedule = {
       ],
     },
   ],
+  hashtags: "",
 };
-export default function NewSchedulePage() {
+export default function NewArticlePage() {
   return (
     <div className="p-10">
       <Formik
         initialValues={initialValues}
         onSubmit={(values) => console.log(values)}
       >
-        {({ values, touched, errors, setFieldValue }) => (
+        {({ values, touched, errors }) => (
           <Form className="flex flex-col">
             <section className="flex flex-col gap-4 p-4 border-b-2">
               <div className="flex gap-2 w-full">
@@ -87,64 +89,13 @@ export default function NewSchedulePage() {
                   className="focus:outline-none w-1/3"
                 />
               </div>
-              <div className="flex gap-2 w-full">
-                <Field
-                  type="text"
-                  name="place"
-                  as={Input}
-                  isRequired
-                  placeholder="장소"
-                  size="lg"
-                  className="focus:outline-none w-1/2"
-                />
-                <div className="flex gap-1 w-1/2">
-                  <Field
-                    as={DateRangePicker}
-                    isRequired
-                    selectionType="date"
-                    size="sm"
-                    radius="md"
-                    label="여행 기간"
-                    name={values.date}
-                    className="focus:outline-none w-full"
-                    onChange={(e: {
-                      start: { year: number; month: number; day: number };
-                      end: { year: number; month: number; day: number };
-                    }) => {
-                      const { start, end } = e;
-                      const startDate = new Date(
-                        start.year,
-                        start.month - 1,
-                        start.day
-                      );
-                      const endDate = new Date(
-                        end.year,
-                        end.month - 1,
-                        end.day
-                      );
-
-                      const formattedStartDate = format(
-                        startDate,
-                        "yyyy-MM-dd"
-                      );
-                      const formattedEndDate = format(endDate, "yyyy-MM-dd");
-
-                      setFieldValue("date", {
-                        start: parseDate(formattedStartDate),
-                        end: parseDate(formattedEndDate),
-                      });
-
-                      console.log(values.date);
-                    }}
-                  />
-                </div>
-              </div>
             </section>
             <FieldArray name="contents">
               {({ push, remove }) => (
                 <div className="p-4 flex flex-col gap-5">
                   {values.contents.map((content, idx) => {
                     const contents_title = `contents[${idx}].content_title`;
+                    const content_place = `contents[${idx}].content_place`;
                     const contents_id = `contents[${idx}].id`;
 
                     return (
@@ -152,14 +103,25 @@ export default function NewSchedulePage() {
                         key={contents_id}
                         className="flex flex-col gap-4 mt-5 relative"
                       >
-                        <Field
-                          type="text"
-                          as={Input}
-                          isRequired
-                          name={contents_title}
-                          placeholder="소제목"
-                          className="focus:outline-none w-1/2"
-                        />
+                        <div className="flex justify-start gap-2">
+                          <Field
+                            type="text"
+                            as={Input}
+                            isRequired
+                            name={contents_title}
+                            placeholder="소제목"
+                            className="focus:outline-none w-1/2"
+                          />
+                          <Field
+                            type="text"
+                            as={Input}
+                            name={content_place}
+                            variant="underlined"
+                            placeholder="장소"
+                            className="focus:outline-none w-fit"
+                          />
+                        </div>
+
                         <div className="flex flex-col bg-scheduleContentBox p-4 rounded-xl gap-4">
                           <FieldArray name={`contents.${idx}.content`}>
                             {({ push, remove }) => (
@@ -202,7 +164,7 @@ export default function NewSchedulePage() {
                                           as={Textarea}
                                           name={content_detail}
                                           isRequired
-                                          placeholder="상세 스케줄 입력"
+                                          placeholder="상세 내용 입력"
                                           rows="3"
                                           variant="underlined"
                                           className="focus:outline-none w-full resize-none bg-transparent p-2"
@@ -313,6 +275,7 @@ export default function NewSchedulePage() {
                       push({
                         id: Math.random(),
                         content_title: "",
+                        content_place: "",
                         content: [
                           {
                             content_id: Math.random(),
@@ -343,6 +306,31 @@ export default function NewSchedulePage() {
                 </div>
               )}
             </FieldArray>
+            <div className="flex gap-1 justify-end p-3 items-center">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth={1.5}
+                stroke="currentColor"
+                className="w-3 h-3"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M5.25 8.25h15m-16.5 7.5h15m-1.8-13.5-3.9 19.5m-2.1-19.5-3.9 19.5"
+                />
+              </svg>
+
+              <Field
+                name="hashtags"
+                as={Input}
+                placeholder="해시태그"
+                className="w-fit"
+                size="sm"
+                variant="underlined"
+              />
+            </div>
             <Button
               type="submit"
               className="self-end px-5 py-2 bg-createScheduleBtn hover:bg-createScheduleBtn_hover rounded-xl"
