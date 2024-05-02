@@ -6,9 +6,9 @@ import { getAllSchedules } from "@/util/schedules";
 
 import CardList from "@/components/ui/card-list";
 export default async function AllSchedulesPage() {
-  // const schedules = await getAllSchedulesData();
+  const schedules = await getAllSchedulesData();
 
-  // console.log(schedules);
+  console.log(schedules);
   return (
     <div className="p-4 mt-2 flex flex-col gap-5">
       <h1 className="text-3xl font-extrabold">SCHEDULES</h1>
@@ -31,8 +31,8 @@ export default async function AllSchedulesPage() {
   );
 }
 
-// export async function getAllSchedulesData() {
-//   const schedules = await getAllSchedules();
+export async function getAllSchedulesData() {
+  const schedules = await getAllSchedules();
 
-//   return schedules;
-// }
+  return schedules;
+}
