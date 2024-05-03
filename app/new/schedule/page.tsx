@@ -14,8 +14,10 @@ import {
 } from "@nextui-org/react";
 import { parseDate } from "@internationalized/date";
 import { format } from "date-fns";
+import { POST } from "./route";
 
 interface NewSchedule {
+  isMarked: boolean;
   title: string;
   category: string;
   place: string;
@@ -40,6 +42,7 @@ interface NewSchedule {
 }
 
 const initialValues: NewSchedule = {
+  isMarked: false,
   title: "",
   category: "",
   place: "",
@@ -67,7 +70,24 @@ export default function NewSchedulePage() {
     <div className="p-10">
       <Formik
         initialValues={initialValues}
-        onSubmit={(values) => console.log(values)}
+        onSubmit={async (values: NewSchedule) => {
+          console.log(values);
+          try {
+            const response = (await fetch("/api/schedules", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify(values),
+            })) as RequestInit;
+
+            return {
+              message: "새로운 스케줄을 생성하는데 성공했습니다.",
+              response,
+            };
+          } catch (err: any) {
+            console.log(err);
+            throw Error("새로운 스케줄을 생성하는데 실패했습니다.", err);
+          }
+        }}
       >
         {({ values, touched, errors, setFieldValue }) => (
           <Form className="flex flex-col">

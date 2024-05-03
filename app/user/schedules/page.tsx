@@ -2,7 +2,6 @@
 // Next.js SSR - getAllSchedules
 // https://nextjs.org/docs/app/building-your-application/upgrading/app-router-migration#server-side-rendering-getserversideprops
 // https://velog.io/@hwon3814/NextJS-v13-App-Router%EC%9D%98-%EC%8A%A4%ED%8A%B8%EB%A6%AC%EB%B0%8DSSR-%EC%95%8C%EC%95%84%EB%B3%B4%EA%B8%B0
-import { getAllSchedules } from "@/util/schedules";
 
 import CardList from "@/components/ui/card-list";
 export default async function AllSchedulesPage() {
@@ -32,7 +31,21 @@ export default async function AllSchedulesPage() {
 }
 
 export async function getAllSchedulesData() {
-  const schedules = await getAllSchedules();
+  try {
+    const response = await fetch("http://localhost:3000/api/schedules", {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Origin: "http://localhost:3000",
+      },
+    });
 
-  return schedules;
+    if (!response.ok) {
+      throw Error("스케줄 불러오는데 실패했습니다.");
+    }
+
+    return response.json();
+  } catch (err) {
+    throw Error("스케줄 불러오는데 실패했습니다.");
+  }
 }
