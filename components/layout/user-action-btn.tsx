@@ -58,13 +58,13 @@ export default function UserActionBtn() {
             className="bg-transparent hover:text-base hover:font-bold"
             onClick={handleClosePopover}
           >
-            <Link href="/articles">Articles</Link>
+            <Link href="/user/schedules">모든 스케줄 보기</Link>
           </Button>
           <Button
             className="bg-transparent hover:text-base hover:font-bold"
             onClick={handleClosePopover}
           >
-            <Link href="/tutorial">Tutorial</Link>
+            <Link href="/articles">Articles</Link>
           </Button>
         </div>
       </PopoverContent>

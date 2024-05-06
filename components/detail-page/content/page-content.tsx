@@ -4,7 +4,7 @@ interface DetailPageContentProps {
   id: string;
   image: string;
   content: string;
-  reference?: string[];
+  reference?: string;
 }
 export default function DetailPageContent({
   id,

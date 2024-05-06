@@ -7,6 +7,7 @@ import mongoose from "mongoose";
 
 const scheduleSchema = new mongoose.Schema({
   isMarked: Boolean,
+  slug: String,
   title: String,
   category: String,
   place: String,
@@ -32,6 +33,7 @@ const scheduleSchema = new mongoose.Schema({
 
 const articleSchema = new mongoose.Schema({
   title: String,
+  slug: String,
   category: String,
   date: String,
   contents: [
@@ -58,3 +60,11 @@ export const ScheduleModel =
 export const ArticleModel =
   mongoose.models?.ArticleModel ||
   mongoose.model("ArticleModel", articleSchema);
+
+export async function connectDB() {
+  try {
+    await mongoose.connect("mongodb://127.0.0.1:27017/holiday_schedule");
+  } catch (err) {
+    throw Error("데이터베이스 연결 실패");
+  }
+}

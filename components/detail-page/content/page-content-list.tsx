@@ -6,29 +6,28 @@ const DUMMY_REFERENCE = ["https://naver.com", "https://google.com"];
 
 interface DetailPageContentListProps {
   id: string;
-  // items : object[] ?
+  content: [{ _id: string; detail: string; image: File; reference: string }];
 }
 
 export default function DetailPageContentList({
   id,
+  content,
 }: DetailPageContentListProps) {
   return (
     <div
       id={id}
       className="bg-scheduleContentBox p-7 mt-2 ml-2 mr-3 rounded-2xl"
     >
-      {/* items를 리스트로 받아와 map을 이용해 표현. */}
-      <DetailPageContent
-        id="content-1"
-        image="/pandas2.jpeg"
-        content={DUMMY_CONTENT}
-        reference={DUMMY_REFERENCE}
-      />
-      <DetailPageContent
-        id="content-2"
-        image="/pandas.jpeg"
-        content={DUMMY_CONTENT}
-      />
+      {content.length > 0 &&
+        content.map((content) => (
+          <DetailPageContent
+            key={content._id}
+            id={content._id}
+            image="/pandas2.jpeg"
+            content={content.detail}
+            reference={content.reference}
+          />
+        ))}
     </div>
   );
 }

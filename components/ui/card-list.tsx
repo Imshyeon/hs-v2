@@ -1,4 +1,5 @@
 import CardItem from "./card-item";
+import { Schedule } from "@/util/interfaces";
 
 interface BookMarkProps {
   isMarked: boolean;
@@ -7,6 +8,7 @@ interface BookMarkProps {
 interface CardListProps {
   showBookMark: boolean;
   isMarked?: boolean;
+  schedules: Schedule[];
 }
 
 function BookMark({ isMarked }: BookMarkProps) {
@@ -42,31 +44,26 @@ function BookMark({ isMarked }: BookMarkProps) {
 
 export default function CardList({
   showBookMark,
-  isMarked = false,
+  schedules = [],
 }: CardListProps) {
   return (
     //   차후 items를 받아와 map함수를 이용할 필요가 있다.
     <div className="grid grid-cols-3 gap-4 w-auto p-5">
-      <article>
-        {showBookMark ? <BookMark isMarked={true} /> : null}
-        <CardItem
-          id={"s1"}
-          title={"제목1"}
-          category={"유럽/프랑스"}
-          date={"2024-04-30"}
-          image={""}
-        />
-      </article>
-      <article>
-        {showBookMark ? <BookMark isMarked={isMarked} /> : null}
-        <CardItem
-          id={"s2"}
-          title={"제목2"}
-          category={"유럽/영국"}
-          date={"2024-04-30"}
-          image={"/pandas2.jpeg"}
-        />
-      </article>
+      {schedules.length > 0 &&
+        schedules.map((schedule) => {
+          return (
+            <article key={schedule._id}>
+              {showBookMark ? <BookMark isMarked={schedule.isMarked} /> : null}
+              <CardItem
+                id={schedule._id}
+                title={schedule.title}
+                category={schedule.category}
+                date={schedule.created_date}
+                image={"/pandas2.jpeg"}
+              />
+            </article>
+          );
+        })}
     </div>
   );
 }

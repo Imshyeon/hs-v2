@@ -1,5 +1,4 @@
-import { ScheduleModel } from "@/util/db-util";
-import mongoose from "mongoose";
+import { connectDB, ScheduleModel } from "@/util/db-util";
 import { NextResponse } from "next/server";
 
 export const dynamic = "force-dynamic";
@@ -9,11 +8,12 @@ export const dynamic = "force-dynamic";
 
 export async function POST(req: Request, res: Response) {
   try {
-    await mongoose.connect("mongodb://127.0.0.1:27017/holiday_schedule");
+    connectDB();
     const scheduleData = await req.json();
     const newSchedule = new ScheduleModel(scheduleData);
     await newSchedule.save();
     console.log(newSchedule);
+
     return NextResponse.json(scheduleData);
   } catch (error) {
     throw Error("스케줄을 생성하는데 실패했습니다.");
@@ -22,7 +22,7 @@ export async function POST(req: Request, res: Response) {
 
 export async function GET(req: Request, res: Response) {
   try {
-    await mongoose.connect("mongodb://127.0.0.1:27017/holiday_schedule");
+    connectDB();
     const allSchedules = await ScheduleModel.find({});
     return NextResponse.json(allSchedules);
   } catch (err) {

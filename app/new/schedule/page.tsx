@@ -14,7 +14,7 @@ import {
 } from "@nextui-org/react";
 import { parseDate } from "@internationalized/date";
 import { format } from "date-fns";
-import { POST } from "./route";
+import slugify from "slugify";
 
 interface NewSchedule {
   isMarked: boolean;
@@ -25,12 +25,10 @@ interface NewSchedule {
   created_date: string;
   contents: [
     {
-      id: number;
       content_title: string;
       content_place: string;
       content: [
         {
-          content_id: number;
           detail: string;
           image: File;
           reference: string;
@@ -50,12 +48,10 @@ const initialValues: NewSchedule = {
   created_date: new Date().toLocaleDateString(),
   contents: [
     {
-      id: Math.random(),
       content_title: "",
       content_place: "",
       content: [
         {
-          content_id: Math.random(),
           detail: "",
           image: new File([], "", {}),
           reference: "",
@@ -71,18 +67,20 @@ export default function NewSchedulePage() {
       <Formik
         initialValues={initialValues}
         onSubmit={async (values: NewSchedule) => {
-          console.log(values);
+          const slug = slugify(values.title, {
+            replacement: "-", // 제거된 문자 대신 '-' 사용
+            remove: /[*+~.()'"!:@]/g,
+            locale: "ko",
+            trim: true,
+          });
+          console.log(values.title, slug);
           try {
             const response = (await fetch("/api/schedules", {
               method: "POST",
               headers: { "Content-Type": "application/json" },
-              body: JSON.stringify(values),
+              body: JSON.stringify({ ...values, slug: slug }),
             })) as RequestInit;
-
-            return {
-              message: "새로운 스케줄을 생성하는데 성공했습니다.",
-              response,
-            };
+            console.log(response);
           } catch (err: any) {
             console.log(err);
             throw Error("새로운 스케줄을 생성하는데 실패했습니다.", err);
@@ -171,11 +169,10 @@ export default function NewSchedulePage() {
                   {values.contents.map((content, idx) => {
                     const contents_title = `contents[${idx}].content_title`;
                     const content_place = `contents[${idx}].content_place`;
-                    const contents_id = `contents[${idx}].id`;
 
                     return (
                       <section
-                        key={contents_id}
+                        key={contents_title}
                         className="flex flex-col gap-4 mt-5 relative"
                       >
                         <div className="flex justify-start gap-2">
@@ -202,11 +199,10 @@ export default function NewSchedulePage() {
                             {({ push, remove }) => (
                               <>
                                 {content.content.map((value, index) => {
-                                  const content_id = `contents[${idx}].content[${index}].content_id`;
                                   const content_detail = `contents[${idx}].content[${index}].detail`;
                                   const reference = `contents[${idx}].content[${index}].reference`;
                                   return (
-                                    <div key={content_id}>
+                                    <div key={content_detail}>
                                       {/* <Field
                                         type="file"
                                         name={`contents[${idx}].content[${index}].image`}
@@ -298,7 +294,6 @@ export default function NewSchedulePage() {
                                   type="button"
                                   onClick={() =>
                                     push({
-                                      content_id: Math.random(),
                                       detail: "",
                                       image: null,
                                       reference: "",
@@ -348,12 +343,10 @@ export default function NewSchedulePage() {
                     type="button"
                     onClick={() =>
                       push({
-                        id: Math.random(),
                         content_title: "",
                         content_place: "",
                         content: [
                           {
-                            content_id: Math.random(),
                             detail: "",
                             image: null,
                             reference: "",

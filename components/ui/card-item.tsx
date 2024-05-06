@@ -5,7 +5,7 @@ import Link from "next/link";
 interface CardItemProps {
   id: string;
   title: string;
-  date: string;
+  date: string | string[];
   image: string;
   category: string;
 }
@@ -16,8 +16,9 @@ export default function CardItem({
   image,
   category,
 }: CardItemProps) {
+  const slug = title.replace(" ", "-");
   return (
-    <Link href={"/user/schedules/영국-여행"}>
+    <Link href={`/user/schedules/${slug}`}>
       <div id={id} className="bg-scheduleContentBox/50 rounded-xl p-3 h-fit">
         <div className="flex gap-3 justify-between p-2">
           <span className="text-xs text-slate-900 font-thin">{category}</span>
