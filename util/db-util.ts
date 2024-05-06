@@ -4,6 +4,7 @@
 // 3. 공식문서 : https://nextjs.org/docs/app/building-your-application/routing/route-handlers
 // 4. mongoose 공식문서 : https://mongoosejs.com/docs/models.html
 import mongoose from "mongoose";
+import { NextResponse } from "next/server";
 
 const scheduleSchema = new mongoose.Schema({
   isMarked: Boolean,

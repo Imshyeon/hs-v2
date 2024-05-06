@@ -15,6 +15,7 @@ import {
 import { parseDate } from "@internationalized/date";
 import { format } from "date-fns";
 import slugify from "slugify";
+import { useRouter } from "next/navigation";
 
 interface NewSchedule {
   isMarked: boolean;
@@ -62,6 +63,7 @@ const initialValues: NewSchedule = {
   hashtags: "",
 };
 export default function NewSchedulePage() {
+  const router = useRouter();
   return (
     <div className="p-10">
       <Formik
@@ -81,6 +83,7 @@ export default function NewSchedulePage() {
               body: JSON.stringify({ ...values, slug: slug }),
             })) as RequestInit;
             console.log(response);
+            router.push("/user/schedules");
           } catch (err: any) {
             console.log(err);
             throw Error("새로운 스케줄을 생성하는데 실패했습니다.", err);

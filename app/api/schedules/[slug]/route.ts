@@ -1,9 +1,10 @@
 // detail schedule
+"use server";
+import { redirect } from "next/navigation";
 import { ScheduleModel, connectDB } from "@/util/db-util";
 import { NextResponse } from "next/server";
-import slugify from "slugify";
 
-export const dynamic = "force-dynamic";
+import slugify from "slugify";
 
 export async function GET(
   req: Request,
@@ -17,6 +18,7 @@ export async function GET(
       trim: true,
     });
     const currentSchedule = await ScheduleModel.find({ slug: slug });
+
     return NextResponse.json(currentSchedule);
   } catch (err: any) {
     throw Error(err);
@@ -46,13 +48,19 @@ export async function POST(
 
 export async function DELETE(
   req: Request,
-  res: Response,
   { params }: { params: { slug: string } }
 ) {
   try {
     connectDB();
-    await ScheduleModel.deleteMany({ slug: "" });
-  } catch (err) {
-    console.log(err);
+    const slug = slugify(params.slug, {
+      replacement: "-", // 제거된 문자 대신 '-' 사용
+      remove: /[*+~.()'"!:@]/g,
+      trim: true,
+    });
+    const response = await ScheduleModel.deleteOne({ slug: slug });
+
+    return NextResponse.json(response);
+  } catch (err: any) {
+    throw Error(err);
   }
 }
