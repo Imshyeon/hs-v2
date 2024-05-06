@@ -5,13 +5,10 @@ import { NextPage } from "next";
 import EntireContentList from "@/components/detail-page/content/entire-content-list";
 import DetailPageHashtag from "@/components/detail-page/page-hashtag";
 import { Schedule } from "@/util/interfaces";
-import slugify from "slugify";
 
 interface MyPageProps {
   params: { slug: string };
 }
-
-const DUMMY_HASHTAGS = ["영국", "셜록홈즈"];
 
 export async function getDetailSchedule(slug: string) {
   try {
@@ -24,8 +21,6 @@ export async function getDetailSchedule(slug: string) {
       );
     }
     const scheduleData: Schedule[] = await response.json();
-    console.log("data=>", scheduleData);
-    console.log("slug=>", slug);
     return scheduleData[0];
   } catch (err: any) {
     throw Error(err);
