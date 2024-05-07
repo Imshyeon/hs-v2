@@ -2,7 +2,7 @@
 
 // 참고 : https://codesandbox.io/p/sandbox/formik-fieldarray-materialui-f7rkz?file=%2Fsrc%2Fform.js%3A79%2C28
 
-import { Formik, Form, Field, FieldArray } from "formik";
+import { Formik, Form, Field, FieldArray, useFormik } from "formik";
 import { Button } from "@nextui-org/button";
 import {
   Input,
@@ -16,29 +16,9 @@ import { parseDate } from "@internationalized/date";
 import { format } from "date-fns";
 import slugify from "slugify";
 import { useRouter } from "next/navigation";
-
-interface NewSchedule {
-  isMarked: boolean;
-  title: string;
-  category: string;
-  place: string;
-  date: {};
-  created_date: string;
-  contents: [
-    {
-      content_title: string;
-      content_place: string;
-      content: [
-        {
-          detail: string;
-          image: File;
-          reference: string;
-        }
-      ];
-    }
-  ];
-  hashtags?: string;
-}
+import { NewSchedule } from "@/util/interfaces";
+import UploadFile from "@/components/formik/uploadImage";
+import MyTextField from "@/components/formik/useTextField";
 
 const initialValues: NewSchedule = {
   isMarked: false,
@@ -62,8 +42,10 @@ const initialValues: NewSchedule = {
   ],
   hashtags: "",
 };
+
 export default function NewSchedulePage() {
   const router = useRouter();
+
   return (
     <div className="p-10">
       <Formik
@@ -75,7 +57,7 @@ export default function NewSchedulePage() {
             locale: "ko",
             trim: true,
           });
-          console.log(values.title, slug);
+
           try {
             const response = (await fetch("/api/schedules", {
               method: "POST",
@@ -90,38 +72,32 @@ export default function NewSchedulePage() {
           }
         }}
       >
-        {({ values, touched, errors, setFieldValue }) => (
+        {({ values, touched, errors, setFieldValue, setFieldTouched }) => (
           <Form className="flex flex-col">
             <section className="flex flex-col gap-4 p-4 border-b-2">
               <div className="flex gap-2 w-full">
-                <Field
-                  type="text"
+                <MyTextField
+                  size="lg"
                   name="title"
-                  as={Input}
-                  isRequired
                   placeholder="제목"
-                  size="lg"
                   className="focus:outline-none w-2/3"
-                />
-                <Field
-                  type="text"
-                  name="category"
                   as={Input}
-                  isRequired
-                  placeholder="카테고리"
+                />
+                <MyTextField
                   size="lg"
+                  name="category"
+                  placeholder="카테고리"
                   className="focus:outline-none w-1/3"
+                  as={Input}
                 />
               </div>
               <div className="flex gap-2 w-full">
-                <Field
-                  type="text"
-                  name="place"
-                  as={Input}
-                  isRequired
-                  placeholder="장소"
+                <MyTextField
                   size="lg"
+                  name="place"
+                  placeholder="장소"
                   className="focus:outline-none w-1/2"
+                  as={Input}
                 />
                 <div className="flex gap-1 w-1/2">
                   <Field
@@ -179,24 +155,21 @@ export default function NewSchedulePage() {
                         className="flex flex-col gap-4 mt-5 relative"
                       >
                         <div className="flex justify-start gap-2">
-                          <Field
-                            type="text"
-                            as={Input}
-                            isRequired
+                          <MyTextField
                             name={contents_title}
                             placeholder="소제목"
                             className="focus:outline-none w-1/2"
-                          />
-                          <Field
-                            type="text"
                             as={Input}
-                            isRequired
+                            size="default"
+                          />
+                          <MyTextField
                             name={content_place}
                             placeholder="여행 장소"
                             className="focus:outline-none w-fit"
+                            as={Input}
+                            size="default"
                           />
                         </div>
-
                         <div className="flex flex-col bg-scheduleContentBox p-4 rounded-xl gap-4">
                           <FieldArray name={`contents.${idx}.content`}>
                             {({ push, remove }) => (
@@ -204,35 +177,31 @@ export default function NewSchedulePage() {
                                 {content.content.map((value, index) => {
                                   const content_detail = `contents[${idx}].content[${index}].detail`;
                                   const reference = `contents[${idx}].content[${index}].reference`;
+                                  const content_image = `contents[${idx}].content[${index}].image`;
                                   return (
                                     <div key={content_detail}>
-                                      {/* <Field
+                                      {/* <UploadFile
+                                        data={}
+                                        name={`contents[${idx}].content[${index}].image`}
+                                        errors={}
+                                        setFieldValue={setFieldValue}
+                                      /> */}
+                                      <input
+                                        id="file"
                                         type="file"
                                         name={`contents[${idx}].content[${index}].image`}
-                                        onChange={(
-                                          event: React.ChangeEvent<HTMLInputElement>
-                                        ) => {
-                                          // 파일이 선택되었을 때
-                                          if (
-                                            event.currentTarget.files &&
-                                            event.currentTarget.files.length > 0
-                                          ) {
-                                            // 파일 객체 추출
-                                            const file: File =
-                                              event.currentTarget.files[0];
-                                            // Formik 값에 파일 객체 설정
-                                            // setFieldValue(
-                                            //   `contents[${idx}].content[${index}].image`,
-                                            //   file
-                                            // );
-                                            console.log(
-                                              `contents[${idx}].content[${index}].image`,
-                                              file
+                                        onChange={(e: any) => {
+                                          if (e.currentTarget.files) {
+                                            setFieldValue(
+                                              "file",
+                                              e.currentTarget.files[0]
                                             );
                                           }
+                                          console.log(e.currentTarget.files[0]);
                                         }}
+                                        accept="image/*"
                                         className="border p-2 focus:outline-none rounded-xl w-full"
-                                      /> */}
+                                      />
                                       <div className="bg-white border rounded-xl w-full p-2 flex flex-col">
                                         <Field
                                           as={Textarea}

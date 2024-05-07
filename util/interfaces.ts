@@ -49,3 +49,26 @@ export interface ScheduleContent {
     }
   ];
 }
+
+export interface NewSchedule {
+  isMarked: boolean;
+  title: string;
+  category: string;
+  place: string;
+  date: {};
+  created_date: string;
+  contents: [
+    {
+      content_title: string;
+      content_place: string;
+      content: [
+        {
+          detail: string;
+          image: File | undefined;
+          reference: string;
+        }
+      ];
+    }
+  ];
+  hashtags?: string;
+}

@@ -1,6 +1,5 @@
 // detail schedule
 "use server";
-import { redirect } from "next/navigation";
 import { ScheduleModel, connectDB } from "@/util/db-util";
 import { NextResponse } from "next/server";
 
@@ -26,7 +25,7 @@ export async function GET(
 }
 
 // 수정..?
-export async function POST(
+export async function PUT(
   req: Request,
   res: Response,
   { params }: { params: { slug: string } }
@@ -39,7 +38,7 @@ export async function POST(
       title: slug,
       ...updatedData,
     };
-    const updatedSchedule = await ScheduleModel.findByIdAndUpdate(scheduleData);
+    const updatedSchedule = await ScheduleModel.findOneAndUpdate(scheduleData);
     return NextResponse.json(updatedSchedule);
   } catch (err) {
     throw Error("해당 스케줄을 수정하는데 실패했습니다. 다시 시도해주세요.");
