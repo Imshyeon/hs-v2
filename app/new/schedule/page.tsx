@@ -17,8 +17,13 @@ import { format } from "date-fns";
 import slugify from "slugify";
 import { useRouter } from "next/navigation";
 import { NewSchedule } from "@/util/interfaces";
-import UploadFile from "@/components/formik/uploadImage";
 import MyTextField from "@/components/formik/useTextField";
+import { useState } from "react";
+import { S3 } from "@aws-sdk/client-s3";
+
+const s3 = new S3({
+  region: "ap-northeast-2",
+});
 
 const initialValues: NewSchedule = {
   isMarked: false,
@@ -34,7 +39,7 @@ const initialValues: NewSchedule = {
       content: [
         {
           detail: "",
-          image: new File([], "", {}),
+          image: "",
           reference: "",
         },
       ],
@@ -45,6 +50,45 @@ const initialValues: NewSchedule = {
 
 export default function NewSchedulePage() {
   const router = useRouter();
+  const [imageURL, setImageURL] = useState<string[]>([]);
+
+  async function handleFileUpload(event: any, upper: number, current: number) {
+    event.preventDefault();
+    const file = event.target.files[0];
+    const fileName = file.name;
+
+    // const reader = new FileReader();
+    // reader.readAsDataURL(file);
+    // reader.onload = (event: any) => {
+    //   if (reader.readyState === 2) {
+    //     // 파일 onLoad가 성공하면 2, 진행 중은 1, 실패는 0 반환
+    //     setImageURL(event.target.result);
+    //   }
+    // };
+
+    const formData = new FormData();
+    formData.append("file", file);
+
+    try {
+      const response = await fetch("http://localhost:3000/api/new/schedules", {
+        method: "POST",
+        body: formData,
+      });
+      if (!response.ok) {
+        console.log({ message: "이미지 업로드 실패" });
+      }
+
+      setImageURL((prevImages) => {
+        return [
+          `https://zoekangdev-project-holiday-schedules-v2.s3.ap-northeast-2.amazonaws.com/${fileName}`,
+          ...prevImages,
+        ];
+      });
+    } catch (err) {
+      console.log({ message: "이미지 업로드 실패" });
+    }
+  }
+  console.log(imageURL);
 
   return (
     <div className="p-10">
@@ -58,6 +102,12 @@ export default function NewSchedulePage() {
             trim: true,
           });
 
+          values.contents.map((content, index) => {
+            content.content.map((c) => {
+              c.image = imageURL[index];
+            });
+          });
+
           try {
             const response = (await fetch("/api/schedules", {
               method: "POST",
@@ -65,7 +115,7 @@ export default function NewSchedulePage() {
               body: JSON.stringify({ ...values, slug: slug }),
             })) as RequestInit;
             console.log(response);
-            router.push("/user/schedules");
+            router.push(`/user/schedules/${slug}`);
           } catch (err: any) {
             console.log(err);
             throw Error("새로운 스케줄을 생성하는데 실패했습니다.", err);
@@ -180,25 +230,13 @@ export default function NewSchedulePage() {
                                   const content_image = `contents[${idx}].content[${index}].image`;
                                   return (
                                     <div key={content_detail}>
-                                      {/* <UploadFile
-                                        data={}
-                                        name={`contents[${idx}].content[${index}].image`}
-                                        errors={}
-                                        setFieldValue={setFieldValue}
-                                      /> */}
                                       <input
                                         id="file"
                                         type="file"
                                         name={`contents[${idx}].content[${index}].image`}
-                                        onChange={(e: any) => {
-                                          if (e.currentTarget.files) {
-                                            setFieldValue(
-                                              "file",
-                                              e.currentTarget.files[0]
-                                            );
-                                          }
-                                          console.log(e.currentTarget.files[0]);
-                                        }}
+                                        onChange={(e) =>
+                                          handleFileUpload(e, idx, index)
+                                        }
                                         accept="image/*"
                                         className="border p-2 focus:outline-none rounded-xl w-full"
                                       />

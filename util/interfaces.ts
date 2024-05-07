@@ -27,7 +27,7 @@ export interface Schedule {
         {
           _id: string;
           detail: string;
-          image: File;
+          image: string;
           reference: string;
         }
       ];
@@ -44,7 +44,7 @@ export interface ScheduleContent {
     {
       _id: string;
       detail: string;
-      image: File;
+      image: string;
       reference: string;
     }
   ];
@@ -64,7 +64,7 @@ export interface NewSchedule {
       content: [
         {
           detail: string;
-          image: File | undefined;
+          image?: string | undefined;
           reference: string;
         }
       ];

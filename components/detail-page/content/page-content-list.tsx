@@ -6,7 +6,7 @@ const DUMMY_REFERENCE = ["https://naver.com", "https://google.com"];
 
 interface DetailPageContentListProps {
   id: string;
-  content: [{ _id: string; detail: string; image: File; reference: string }];
+  content: [{ _id: string; detail: string; image: string; reference: string }];
 }
 
 export default function DetailPageContentList({
@@ -23,7 +23,7 @@ export default function DetailPageContentList({
           <DetailPageContent
             key={content._id}
             id={content._id}
-            image="/pandas2.jpeg"
+            image={content.image || "/pandas.jpeg"}
             content={content.detail}
             reference={content.reference}
           />

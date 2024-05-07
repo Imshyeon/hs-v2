@@ -22,7 +22,6 @@ export async function getDetailSchedule(slug: string) {
         "해당 스케줄 데이터를 가져오는데 실패했습니다. 다시 시도해주세요."
       );
     }
-    console.log("slug=>", slug, response);
     const scheduleData: Schedule[] = await response.json();
     return scheduleData[0];
   } catch (err: any) {
@@ -48,7 +47,6 @@ const ScheduleDetailPage: NextPage<MyPageProps> = ({ params }) => {
     };
     fetchData();
   }, [scheduleSlug]);
-  console.log(scheduleData);
 
   if (!scheduleData) {
     return <div>Loading...</div>;

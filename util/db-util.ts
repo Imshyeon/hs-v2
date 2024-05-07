@@ -23,7 +23,7 @@ const scheduleSchema = new mongoose.Schema({
         {
           content_id: Number,
           detail: String,
-          image: Object,
+          image: String,
           reference: String,
         },
       ],
