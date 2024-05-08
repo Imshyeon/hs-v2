@@ -8,11 +8,10 @@ import { Schedule } from "@/util/interfaces";
 
 export default async function AllSchedulesPage() {
   const { markedSchedules, allSchedules } = await getAllSchedulesData();
-  console.log(markedSchedules, allSchedules);
+  console.log("marked=>", markedSchedules);
   return (
     <div className="p-4 mt-2 flex flex-col gap-5">
       <h1 className="text-3xl font-extrabold">SCHEDULES</h1>
-
       {/* 고정 */}
       {markedSchedules.length > 0 && (
         <div id="bookmarked" className="border-b-2 border-dotted">
@@ -53,11 +52,13 @@ export async function getAllSchedulesData() {
     const markedSchedules = allSchedules.filter(
       (schedule) => schedule!.isMarked
     );
+
+    console.log(allSchedules);
     return {
       allSchedules,
       markedSchedules,
     };
-  } catch (err) {
-    throw Error("스케줄 불러오는데 실패했습니다.");
+  } catch (err: any) {
+    throw Error("스케줄 불러오는데 실패했습니다.", err);
   }
 }

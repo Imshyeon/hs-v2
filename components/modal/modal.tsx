@@ -13,10 +13,12 @@ export default function ModalComponent({
   isOpen,
   onClose,
   onContinue,
+  title,
 }: {
   isOpen: boolean;
   onClose: () => void;
   onContinue: () => void;
+  title: string;
 }) {
   const { onOpenChange } = useDisclosure();
 
@@ -31,12 +33,13 @@ export default function ModalComponent({
         <ModalContent>
           <>
             <ModalHeader className="flex flex-col gap-1">
-              (스케줄/아티클) 삭제, 편집?
+              해당 스케줄을 삭제하시겠습니까?
             </ModalHeader>
             <ModalBody>
-              {/* <p>
-                  (스케줄/아티클)을 삭제/편집 하실 경우 
-                </p> */}
+              <p>
+                <strong>{title}</strong> 영구히 삭제하시려면 아래의 삭제 버튼을
+                눌러주세요
+              </p>
             </ModalBody>
             <ModalFooter>
               <Button color="danger" variant="light" onPress={onClose}>

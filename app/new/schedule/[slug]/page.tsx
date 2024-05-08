@@ -1,8 +1,6 @@
 "use client";
 
-// 참고 : https://codesandbox.io/p/sandbox/formik-fieldarray-materialui-f7rkz?file=%2Fsrc%2Fform.js%3A79%2C28
-
-import { Formik, Form, Field, FieldArray, useFormik } from "formik";
+import { Formik, Form, Field, FieldArray } from "formik";
 import { Button } from "@nextui-org/button";
 import {
   Input,
@@ -16,9 +14,24 @@ import { parseDate } from "@internationalized/date";
 import { format } from "date-fns";
 import slugify from "slugify";
 import { useRouter } from "next/navigation";
-import { NewSchedule } from "@/util/interfaces";
+import { NewSchedule, Schedule } from "@/util/interfaces";
 import MyTextField from "@/components/formik/useTextField";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+
+export async function getCurrentScheduleData(slug: string) {
+  try {
+    const response = await fetch(`http://localhost:3000/api/schedules/${slug}`);
+    if (!response.ok) {
+      throw Error(
+        "해당 스케줄 데이터를 가져오는데 실패했습니다. 다시 시도해주세요."
+      );
+    }
+    const scheduleData: Schedule[] = await response.json();
+    return scheduleData[0];
+  } catch (err: any) {
+    throw Error(err);
+  }
+}
 
 const initialValues: NewSchedule = {
   isMarked: false,
@@ -43,24 +56,32 @@ const initialValues: NewSchedule = {
   hashtags: "",
 };
 
-export default function NewSchedulePage() {
+export default function NewSchedulePage({
+  params,
+}: {
+  params: { slug: string };
+}) {
   const router = useRouter();
   const [imageURL, setImageURL] = useState<string[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [scheduleData, setScheduleData] = useState<Schedule | NewSchedule>(
+    initialValues
+  );
+  const scheduleSlug = decodeURIComponent(params.slug);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const data = await getCurrentScheduleData(scheduleSlug);
+      setScheduleData(data);
+      setLoading(false);
+    };
+    fetchData();
+  }, [scheduleSlug]);
 
   async function handleFileUpload(event: any, upper: number, current: number) {
     event.preventDefault();
     const file = event.target.files[0];
     const fileName = file.name;
-
-    // const reader = new FileReader();
-    // reader.readAsDataURL(file);
-    // reader.onload = (event: any) => {
-    //   if (reader.readyState === 2) {
-    //     // 파일 onLoad가 성공하면 2, 진행 중은 1, 실패는 0 반환
-    //     setImageURL(event.target.result);
-    //   }
-    // };
-
     const formData = new FormData();
     formData.append("file", file);
 
@@ -83,12 +104,11 @@ export default function NewSchedulePage() {
       console.log({ message: "이미지 업로드 실패" });
     }
   }
-  console.log(imageURL);
 
-  return (
+  return !loading ? (
     <div className="p-10">
       <Formik
-        initialValues={initialValues}
+        initialValues={scheduleData}
         onSubmit={async (values: NewSchedule) => {
           const slug = slugify(values.title, {
             replacement: "-", // 제거된 문자 대신 '-' 사용
@@ -104,10 +124,10 @@ export default function NewSchedulePage() {
           });
 
           try {
-            const response = (await fetch("/api/schedules", {
-              method: "POST",
+            const response = (await fetch(`/api/schedules/${scheduleSlug}`, {
+              method: "PUT",
               headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({ ...values, slug: slug }),
+              body: JSON.stringify({ ...values, slug: scheduleSlug }),
             })) as RequestInit;
             console.log(response);
             router.push(`/user/schedules/${slug}`);
@@ -414,5 +434,7 @@ export default function NewSchedulePage() {
         )}
       </Formik>
     </div>
+  ) : (
+    <p>Loading...</p>
   );
 }

@@ -29,7 +29,6 @@ export default function RootLayout({
             </div>
             <UserActionBtn />
           </div>
-          {/* Footer가 필요없는 경우.. 고민 후 삭제하자 */}
           <Footer />
         </Providers>
       </body>

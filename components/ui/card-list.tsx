@@ -1,8 +1,11 @@
+"use client";
+import { useState } from "react";
 import CardItem from "./card-item";
 import { Schedule } from "@/util/interfaces";
 
 interface BookMarkProps {
   isMarked: boolean;
+  slug: string;
 }
 
 interface CardListProps {
@@ -11,9 +14,25 @@ interface CardListProps {
   schedules: Schedule[];
 }
 
-function BookMark({ isMarked }: BookMarkProps) {
+function BookMark({ isMarked, slug }: BookMarkProps) {
+  const [bookmark, setBookMark] = useState(isMarked);
+
+  function clickBookMarkIcon() {
+    setBookMark((prev) => !prev);
+  }
+
+  fetch(`/api/schedules/${slug}`, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ isMarked: bookmark, slug }),
+    cache: "no-store",
+  })
+    .then((response) => response.json())
+    .then((resData) => (isMarked = resData.isMarked));
+
   return isMarked ? (
     <svg
+      onClick={clickBookMarkIcon}
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 20 20"
       className="absolute ml-2 w-5 h-5 z-10 fill-yellow-500 hover:fill-none hover:stroke-[1.3px] hover:stroke-black cursor-pointer"
@@ -26,6 +45,7 @@ function BookMark({ isMarked }: BookMarkProps) {
     </svg>
   ) : (
     <svg
+      onClick={clickBookMarkIcon}
       xmlns="http://www.w3.org/2000/svg"
       fill="none"
       viewBox="0 0 24 24"
@@ -47,19 +67,20 @@ export default function CardList({
   schedules = [],
 }: CardListProps) {
   return (
-    //   차후 items를 받아와 map함수를 이용할 필요가 있다.
     <div className="grid grid-cols-3 gap-4 w-auto p-5">
       {schedules.length > 0 &&
         schedules.map((schedule) => {
           return (
             <article key={schedule._id}>
-              {showBookMark ? <BookMark isMarked={schedule.isMarked} /> : null}
+              {showBookMark ? (
+                <BookMark isMarked={schedule.isMarked} slug={schedule.slug} />
+              ) : null}
               <CardItem
                 id={schedule._id}
                 title={schedule.title}
                 category={schedule.category}
                 date={schedule.created_date}
-                image={"/pandas2.jpeg"}
+                image={schedule.contents[0].content[0].image || "/pandas2.jpeg"}
               />
             </article>
           );

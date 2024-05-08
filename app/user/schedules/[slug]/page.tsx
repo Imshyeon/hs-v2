@@ -1,4 +1,3 @@
-// 유저의 특정 스케줄 페이지
 "use client";
 import DetailPageInfo from "@/components/detail-page/page-info";
 import { NextPage } from "next";
@@ -47,6 +46,7 @@ const ScheduleDetailPage: NextPage<MyPageProps> = ({ params }) => {
     };
     fetchData();
   }, [scheduleSlug]);
+  console.log(scheduleData);
 
   if (!scheduleData) {
     return <div>Loading...</div>;
@@ -57,7 +57,7 @@ const ScheduleDetailPage: NextPage<MyPageProps> = ({ params }) => {
 
   async function handleRePostClick() {
     console.log(`repost ${scheduleSlug}`);
-    router.push(`/new/schedule?slug=${scheduleSlug}`); // 해당 url로 리다이렉션 -> 데이터를 불러와서 수정할수 있도록...
+    router.push(`/new/schedule/${scheduleSlug}`); // 해당 url로 리다이렉션 -> 데이터를 불러와서 수정할수 있도록...
   }
   function handleDeleteClick() {
     onOpen();
@@ -70,6 +70,7 @@ const ScheduleDetailPage: NextPage<MyPageProps> = ({ params }) => {
     <div>
       {isOpen && (
         <ModalComponent
+          title={scheduleData.title}
           isOpen={isOpen}
           onClose={onClose}
           onContinue={async () => {

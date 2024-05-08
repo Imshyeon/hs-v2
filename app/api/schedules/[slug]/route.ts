@@ -24,21 +24,21 @@ export async function GET(
   }
 }
 
-// 수정..?
-export async function PUT(
-  req: Request,
-  res: Response,
-  { params }: { params: { slug: string } }
-) {
+export async function PUT(req: Request, res: Response) {
   try {
     connectDB();
-    const slug = params.slug;
     const updatedData = await req.json();
-    const scheduleData = {
-      title: slug,
-      ...updatedData,
-    };
-    const updatedSchedule = await ScheduleModel.findOneAndUpdate(scheduleData);
+    const slug = slugify(updatedData.slug, {
+      replacement: "-", // 제거된 문자 대신 '-' 사용
+      remove: /[*+~.()'"!:@]/g,
+      trim: true,
+    });
+    const updatedSchedule = await ScheduleModel.findOneAndUpdate(
+      {
+        slug: slug,
+      },
+      updatedData
+    );
     return NextResponse.json(updatedSchedule);
   } catch (err) {
     throw Error("해당 스케줄을 수정하는데 실패했습니다. 다시 시도해주세요.");
