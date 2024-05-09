@@ -2,45 +2,7 @@ import { Schedule } from "@/util/interfaces";
 import { configureStore, createSlice } from "@reduxjs/toolkit";
 
 const date = new Date();
-const initialSchedules: Schedule[] = [
-  {
-    _id: "",
-    category: "",
-    created_date: date.toLocaleDateString(),
-    date: {
-      start: {
-        day: date.getDay(),
-        month: date.getMonth() + 1,
-        year: date.getFullYear(),
-      },
-      end: {
-        day: date.getDay(),
-        month: date.getMonth() + 1,
-        year: date.getFullYear(),
-      },
-    },
-    hashtags: "",
-    isMarked: false,
-    place: "",
-    slug: "",
-    title: "",
-    contents: [
-      {
-        _id: "",
-        content_title: "",
-        content_place: "",
-        content: [
-          {
-            _id: "",
-            detail: "",
-            image: "",
-            reference: "",
-          },
-        ],
-      },
-    ],
-  },
-];
+const initialSchedules: Schedule[] = [];
 
 const initialState = { schedule: initialSchedules };
 
@@ -54,6 +16,12 @@ const scheduleSlice = createSlice({
         (schedule) => schedule.slug === slug
       )!;
       schedule.isMarked = !schedule.isMarked;
+
+      fetch(`/api/schedules/${slug}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ ...schedule }),
+      });
     },
     setAllSchedules(state, action) {
       const schedules: Schedule[] = action.payload.allSchedules;

@@ -28,6 +28,7 @@ export async function PUT(req: Request, res: Response) {
   try {
     connectDB();
     const updatedData = await req.json();
+    console.log(updatedData);
     const slug = slugify(updatedData.slug, {
       replacement: "-", // 제거된 문자 대신 '-' 사용
       remove: /[*+~.()'"!:@]/g,

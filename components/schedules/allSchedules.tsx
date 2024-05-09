@@ -5,7 +5,6 @@ import { RootState } from "@/store";
 
 export default function AllSchedulesComponent() {
   const { schedule } = useSelector((state: RootState) => state.schedule);
-  console.log(schedule);
   const markedSchedules = schedule.filter((schedule) => schedule.isMarked);
 
   return (
