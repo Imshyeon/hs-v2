@@ -6,6 +6,8 @@ import UserActionBtn from "@/components/layout/user-action-btn";
 import Footer from "@/components/layout/footer";
 import { Providers } from "./provider";
 
+import ScheduleContextProvider from "@/store/schedules";
+
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {

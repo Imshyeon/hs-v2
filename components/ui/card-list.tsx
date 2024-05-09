@@ -1,7 +1,8 @@
 "use client";
-import { useState } from "react";
 import CardItem from "./card-item";
 import { Schedule } from "@/util/interfaces";
+import { useDispatch } from "react-redux";
+import { scheduleActions } from "@/store";
 
 interface BookMarkProps {
   isMarked: boolean;
@@ -15,20 +16,10 @@ interface CardListProps {
 }
 
 function BookMark({ isMarked, slug }: BookMarkProps) {
-  const [bookmark, setBookMark] = useState(isMarked);
-
+  const dispatch = useDispatch();
   function clickBookMarkIcon() {
-    setBookMark((prev) => !prev);
+    dispatch(scheduleActions.addMarkedSchedule(slug));
   }
-
-  fetch(`/api/schedules/${slug}`, {
-    method: "PUT",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ isMarked: bookmark, slug }),
-    cache: "no-store",
-  })
-    .then((response) => response.json())
-    .then((resData) => (isMarked = resData.isMarked));
 
   return isMarked ? (
     <svg
