@@ -3,15 +3,20 @@ import SidebarLinkBtn from "../ui/sidebar-link-btn";
 import Link from "next/link";
 import { Button } from "@nextui-org/button";
 import { Schedule } from "@/util/interfaces";
-import { useSelector } from "react-redux";
-import { RootState } from "@/store";
+import { useDispatch } from "react-redux";
+import { scheduleActions } from "@/store";
 
-export default function Sidebar() {
-  const { schedule } = useSelector((state: RootState) => state.schedule);
+export default function Sidebar({
+  allSchedules,
+}: {
+  allSchedules: Schedule[];
+}) {
+  const dispatch = useDispatch();
+  dispatch(scheduleActions.setAllSchedules({ allSchedules }));
 
-  const markedSchedules = schedule.filter((schedule) => schedule.isMarked);
+  const markedSchedules = allSchedules.filter((schedule) => schedule.isMarked);
 
-  const schedulesExceptMarked = schedule
+  const schedulesExceptMarked = allSchedules
     .filter((schedule) => !schedule.isMarked)
     .slice(0, 4);
   return (

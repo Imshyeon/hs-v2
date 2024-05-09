@@ -25,7 +25,6 @@ const scheduleSlice = createSlice({
     },
     setAllSchedules(state, action) {
       const schedules: Schedule[] = action.payload.allSchedules;
-      console.log("schedules=>", schedules);
       state.schedule = schedules;
     },
     getAllSchedules(state) {

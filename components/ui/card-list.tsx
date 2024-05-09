@@ -12,7 +12,9 @@ interface BookMarkProps {
 interface CardListProps {
   showBookMark: boolean;
   isMarked?: boolean;
-  schedules: Schedule[];
+  schedules?: Schedule[];
+  articles?: [];
+  order?: string;
 }
 
 function BookMark({ isMarked, slug }: BookMarkProps) {
@@ -56,6 +58,7 @@ function BookMark({ isMarked, slug }: BookMarkProps) {
 export default function CardList({
   showBookMark,
   schedules = [],
+  articles = [],
 }: CardListProps) {
   return (
     <div className="grid grid-cols-3 gap-4 w-auto p-5 h-full">
@@ -76,6 +79,7 @@ export default function CardList({
             </article>
           );
         })}
+      {articles && <p>Article</p>}
     </div>
   );
 }
