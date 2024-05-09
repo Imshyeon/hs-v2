@@ -58,7 +58,7 @@ export default function CardList({
   schedules = [],
 }: CardListProps) {
   return (
-    <div className="grid grid-cols-3 gap-4 w-auto p-5">
+    <div className="grid grid-cols-3 gap-4 w-auto p-5 h-full">
       {schedules.length > 0 &&
         schedules.map((schedule) => {
           return (

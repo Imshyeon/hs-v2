@@ -19,7 +19,7 @@ export default function CardItem({
   const slug = title.replace(" ", "-");
   return (
     <Link href={`/user/schedules/${slug}`}>
-      <div id={id} className="bg-scheduleContentBox/50 rounded-xl p-3 h-fit">
+      <div id={id} className="bg-scheduleContentBox/50 rounded-xl p-3 h-full">
         <div className="flex gap-3 justify-between p-2">
           <span className="text-xs text-slate-900 font-thin">{category}</span>
           <span className="text-xs text-slate-900 font-thin">{date}</span>
@@ -30,7 +30,7 @@ export default function CardItem({
             alt={image ? image : "default img"}
             width={500}
             height={200}
-            className="rounded-xl justify-center items-center object-cover w-auto h-auto"
+            className="rounded-xl justify-center items-center object-cover h-4/5"
           />
           <p className="text-md font-medium text-center mt-2">{title}</p>
         </div>
