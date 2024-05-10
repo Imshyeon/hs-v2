@@ -1,5 +1,4 @@
 import Image from "next/image";
-import ImageSVG from "@/public/image.svg";
 import Link from "next/link";
 
 interface CardItemProps {

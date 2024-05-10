@@ -18,7 +18,7 @@ import slugify from "slugify";
 import { useRouter } from "next/navigation";
 import { NewSchedule } from "@/util/interfaces";
 import MyTextField from "@/components/formik/useTextField";
-import { useState } from "react";
+import { useState, ChangeEvent } from "react";
 
 const initialValues: NewSchedule = {
   isMarked: false,
@@ -47,40 +47,40 @@ export default function NewSchedulePage() {
   const router = useRouter();
   const [imageURL, setImageURL] = useState<string[]>([]);
 
-  async function handleFileUpload(event: any, upper: number, current: number) {
+  async function handleFileUpload(
+    event: ChangeEvent<HTMLInputElement>,
+    upper: number,
+    current: number
+  ) {
     event.preventDefault();
-    const file = event.target.files[0];
-    const fileName = file.name;
+    if (event.target.files) {
+      const file = event.target.files[0];
 
-    // const reader = new FileReader();
-    // reader.readAsDataURL(file);
-    // reader.onload = (event: any) => {
-    //   if (reader.readyState === 2) {
-    //     // 파일 onLoad가 성공하면 2, 진행 중은 1, 실패는 0 반환
-    //     setImageURL(event.target.result);
-    //   }
-    // };
+      const fileName = file.name;
+      const formData = new FormData();
+      formData.append("file", file);
 
-    const formData = new FormData();
-    formData.append("file", file);
+      try {
+        const response = await fetch(
+          "http://localhost:3000/api/new/schedules",
+          {
+            method: "POST",
+            body: formData,
+          }
+        );
+        if (!response.ok) {
+          console.log({ message: "이미지 업로드 실패" });
+        }
 
-    try {
-      const response = await fetch("http://localhost:3000/api/new/schedules", {
-        method: "POST",
-        body: formData,
-      });
-      if (!response.ok) {
+        setImageURL((prevImages) => {
+          return [
+            `https://zoekangdev-project-holiday-schedules-v2.s3.ap-northeast-2.amazonaws.com/${fileName}`,
+            ...prevImages,
+          ];
+        });
+      } catch (err) {
         console.log({ message: "이미지 업로드 실패" });
       }
-
-      setImageURL((prevImages) => {
-        return [
-          `https://zoekangdev-project-holiday-schedules-v2.s3.ap-northeast-2.amazonaws.com/${fileName}`,
-          ...prevImages,
-        ];
-      });
-    } catch (err) {
-      console.log({ message: "이미지 업로드 실패" });
     }
   }
   console.log(imageURL);

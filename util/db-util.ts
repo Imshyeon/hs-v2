@@ -4,7 +4,6 @@
 // 3. 공식문서 : https://nextjs.org/docs/app/building-your-application/routing/route-handlers
 // 4. mongoose 공식문서 : https://mongoosejs.com/docs/models.html
 import mongoose from "mongoose";
-import { NextResponse } from "next/server";
 
 const scheduleSchema = new mongoose.Schema({
   isMarked: Boolean,
@@ -55,12 +54,27 @@ const articleSchema = new mongoose.Schema({
   hashtags: String,
 });
 
+const profileSchema = new mongoose.Schema({
+  profileObject: {
+    type: Object,
+    unique: true,
+    name: String,
+    image: String,
+    email: String,
+    password: String,
+    password_confirm: String,
+  },
+});
+
 export const ScheduleModel =
   mongoose.models?.ScheduleModel ||
   mongoose.model("ScheduleModel", scheduleSchema);
 export const ArticleModel =
   mongoose.models?.ArticleModel ||
   mongoose.model("ArticleModel", articleSchema);
+export const ProfileModel =
+  mongoose.models?.ProfileModel ||
+  mongoose.model("ProfileModel", profileSchema);
 
 export async function connectDB() {
   try {

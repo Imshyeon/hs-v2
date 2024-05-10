@@ -4,7 +4,7 @@ import Link from "next/link";
 import { Button } from "@nextui-org/button";
 import { Schedule } from "@/util/interfaces";
 import { useDispatch } from "react-redux";
-import { scheduleActions } from "@/store";
+import { scheduleActions } from "@/store/schedules";
 
 export default function Sidebar({
   allSchedules,

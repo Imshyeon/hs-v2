@@ -5,8 +5,6 @@ import Sidebar from "@/components/layout/sidebar";
 import UserActionBtn from "@/components/layout/user-action-btn";
 import Footer from "@/components/layout/footer";
 import { Providers } from "./provider";
-import { Provider } from "react-redux";
-import store from "@/store/index";
 import { Schedule } from "@/util/interfaces";
 
 const inter = Inter({ subsets: ["latin"] });

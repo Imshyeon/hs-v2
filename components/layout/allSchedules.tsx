@@ -2,7 +2,7 @@
 import CardList from "@/components/ui/card-list";
 import { Select, SelectItem } from "@nextui-org/react";
 import { useSelector } from "react-redux";
-import { RootState } from "@/store";
+import { RootState } from "@/store/index";
 import { useState, useEffect } from "react";
 import { Schedule } from "@/util/interfaces";
 

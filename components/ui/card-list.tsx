@@ -2,7 +2,7 @@
 import CardItem from "./card-item";
 import { Schedule } from "@/util/interfaces";
 import { useDispatch } from "react-redux";
-import { scheduleActions } from "@/store";
+import { scheduleActions } from "@/store/schedules";
 
 interface BookMarkProps {
   isMarked: boolean;
@@ -79,7 +79,7 @@ export default function CardList({
             </article>
           );
         })}
-      {articles && <p>Article</p>}
+      {articles.length > 0 && <p>Article</p>}
     </div>
   );
 }

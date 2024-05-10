@@ -5,7 +5,7 @@
 
 import AllSchedulesComponent from "@/components/layout/allSchedules";
 import TutorialComponent from "@/components/layout/tutorial";
-import { RootState } from "@/store";
+import { RootState } from "@/store/index";
 import { useSelector } from "react-redux";
 
 export default function Home() {

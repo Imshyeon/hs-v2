@@ -1,3 +1,4 @@
+// ==== user schedules ====
 export interface Schedule {
   _id: string;
   isMarked: boolean;
@@ -71,4 +72,13 @@ export interface NewSchedule {
     }
   ];
   hashtags?: string;
+}
+
+// ==== user profile ====
+export interface UserProfileInfos {
+  image: string;
+  name: string;
+  email: string;
+  password: string;
+  password_confirm: string;
 }
