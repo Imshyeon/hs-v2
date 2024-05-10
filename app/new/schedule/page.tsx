@@ -49,8 +49,7 @@ export default function NewSchedulePage() {
 
   async function handleFileUpload(
     event: ChangeEvent<HTMLInputElement>,
-    upper: number,
-    current: number
+    folderName: string
   ) {
     event.preventDefault();
     if (event.target.files) {
@@ -220,9 +219,9 @@ export default function NewSchedulePage() {
                             {({ push, remove }) => (
                               <>
                                 {content.content.map((value, index) => {
+                                  const folderName = `contents[${idx}].content_title`;
                                   const content_detail = `contents[${idx}].content[${index}].detail`;
                                   const reference = `contents[${idx}].content[${index}].reference`;
-                                  const content_image = `contents[${idx}].content[${index}].image`;
                                   return (
                                     <div key={content_detail}>
                                       <input
@@ -230,7 +229,10 @@ export default function NewSchedulePage() {
                                         type="file"
                                         name={`contents[${idx}].content[${index}].image`}
                                         onChange={(e) =>
-                                          handleFileUpload(e, idx, index)
+                                          handleFileUpload(
+                                            e,
+                                            content.content_title
+                                          )
                                         }
                                         accept="image/*"
                                         className="border p-2 focus:outline-none rounded-xl w-full"

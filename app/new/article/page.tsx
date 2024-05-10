@@ -11,47 +11,32 @@ import {
   PopoverTrigger,
   Textarea,
 } from "@nextui-org/react";
-import { DatePicker } from "@nextui-org/date-picker";
-import { parseDate } from "@internationalized/date";
 import { format } from "date-fns";
+import { Articles } from "@/util/interfaces";
+import { ChangeEvent, useState } from "react";
+import slugify from "slugify";
+import { useRouter } from "next/navigation";
 
-interface NewSchedule {
-  title: string;
-  category: string;
-  date: string;
+type ImageState = {
+  [folderName: string]: string[];
+};
 
-  contents: [
-    {
-      id: number;
-      content_title: string;
-      content_place?: string;
-      content: [
-        {
-          content_id: number;
-          detail: string;
-          image: File;
-          reference: string;
-        }
-      ];
-    }
-  ];
-  hashtags?: string;
-}
-
-const initialValues: NewSchedule = {
+const initialValues: Articles = {
+  _id: "",
   title: "",
   category: "",
   date: format(new Date(), "yyyy-MM-dd"),
+  slug: "",
   contents: [
     {
-      id: Math.random(),
+      _id: "",
       content_title: "",
       content_place: "",
       content: [
         {
-          content_id: Math.random(),
+          _id: "",
           detail: "",
-          image: new File([], "", {}),
+          image: "",
           reference: "",
         },
       ],
@@ -60,11 +45,84 @@ const initialValues: NewSchedule = {
   hashtags: "",
 };
 export default function NewArticlePage() {
+  const router = useRouter();
+  const [imageURL, setImageURL] = useState<ImageState>({});
+
+  async function handleFileUpload(
+    event: ChangeEvent<HTMLInputElement>,
+    upperFolderName: string,
+    folderName: string
+  ) {
+    if (event.target.files) {
+      const file = event.target.files[0];
+      const fileName = file.name;
+      const formData = new FormData();
+      formData.append("file", file);
+      formData.append("folder", upperFolderName);
+      formData.append("folder2", folderName);
+
+      try {
+        const response = await fetch("/api/new/articles", {
+          method: "POST",
+          body: formData,
+        });
+        if (!response.ok) {
+          console.log({ message: "이미지 업로드 실패" });
+        }
+
+        setImageURL((prevImages: ImageState) => {
+          if (!prevImages[folderName]) {
+            prevImages[folderName] = [];
+          }
+
+          return {
+            ...prevImages,
+            [folderName]: [
+              ...prevImages[folderName],
+              `https://zoekangdev-project-holiday-schedules-v2.s3.ap-northeast-2.amazonaws.com/articles/${upperFolderName}/${folderName}/${fileName}`,
+            ],
+          };
+        });
+      } catch (err: any) {
+        throw Error(err);
+      }
+    }
+  }
+
+  async function postArticleHandler(values: Articles) {
+    const slug = slugify(values.title, {
+      replacement: "-", // 제거된 문자 대신 '-' 사용
+      remove: /[*+~.()'"!:@]/g,
+      locale: "ko",
+      trim: true,
+    });
+
+    values.contents.map((content, index) => {
+      content.content.map((c) => {
+        c.image = imageURL[content.content_title][index];
+      });
+    });
+
+    try {
+      const response = (await fetch("/api/articles", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ ...values, slug: slug }),
+      })) as RequestInit;
+      console.log(response);
+      router.push(`/articles/${slug}`);
+    } catch (err: any) {
+      console.log(err);
+      throw Error("새로운 스케줄을 생성하는데 실패했습니다.", err);
+    }
+  }
+  console.log(imageURL);
+
   return (
     <div className="p-10">
       <Formik
         initialValues={initialValues}
-        onSubmit={(values) => console.log(values)}
+        onSubmit={(values) => postArticleHandler(values)}
       >
         {({ values, touched, errors }) => (
           <Form className="flex flex-col">
@@ -96,11 +154,10 @@ export default function NewArticlePage() {
                   {values.contents.map((content, idx) => {
                     const contents_title = `contents[${idx}].content_title`;
                     const content_place = `contents[${idx}].content_place`;
-                    const contents_id = `contents[${idx}].id`;
 
                     return (
                       <section
-                        key={contents_id}
+                        key={contents_title}
                         className="flex flex-col gap-4 mt-5 relative"
                       >
                         <div className="flex justify-start gap-2">
@@ -127,38 +184,25 @@ export default function NewArticlePage() {
                             {({ push, remove }) => (
                               <>
                                 {content.content.map((value, index) => {
-                                  const content_id = `contents[${idx}].content[${index}].content_id`;
+                                  const folderName = `contents[${idx}].content_title`;
                                   const content_detail = `contents[${idx}].content[${index}].detail`;
                                   const reference = `contents[${idx}].content[${index}].reference`;
                                   return (
-                                    <div key={content_id}>
-                                      {/* <Field
+                                    <div key={content_detail.slice(5)}>
+                                      <input
+                                        id="file"
                                         type="file"
                                         name={`contents[${idx}].content[${index}].image`}
-                                        onChange={(
-                                          event: React.ChangeEvent<HTMLInputElement>
-                                        ) => {
-                                          // 파일이 선택되었을 때
-                                          if (
-                                            event.currentTarget.files &&
-                                            event.currentTarget.files.length > 0
-                                          ) {
-                                            // 파일 객체 추출
-                                            const file: File =
-                                              event.currentTarget.files[0];
-                                            // Formik 값에 파일 객체 설정
-                                            // setFieldValue(
-                                            //   `contents[${idx}].content[${index}].image`,
-                                            //   file
-                                            // );
-                                            console.log(
-                                              `contents[${idx}].content[${index}].image`,
-                                              file
-                                            );
-                                          }
-                                        }}
+                                        onChange={(e) =>
+                                          handleFileUpload(
+                                            e,
+                                            values.title,
+                                            content.content_title
+                                          )
+                                        }
+                                        accept="image/*"
                                         className="border p-2 focus:outline-none rounded-xl w-full"
-                                      /> */}
+                                      />
                                       <div className="bg-white border rounded-xl w-full p-2 flex flex-col">
                                         <Field
                                           as={Textarea}
@@ -223,7 +267,6 @@ export default function NewArticlePage() {
                                   type="button"
                                   onClick={() =>
                                     push({
-                                      content_id: Math.random(),
                                       detail: "",
                                       image: null,
                                       reference: "",

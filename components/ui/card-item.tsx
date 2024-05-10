@@ -7,6 +7,7 @@ interface CardItemProps {
   date: string | string[];
   image: string;
   category: string;
+  article?: boolean;
 }
 export default function CardItem({
   id,
@@ -14,10 +15,11 @@ export default function CardItem({
   date,
   image,
   category,
+  article,
 }: CardItemProps) {
   const slug = title.replace(" ", "-");
   return (
-    <Link href={`/user/schedules/${slug}`}>
+    <Link href={article ? `/articles/${slug}` : `/user/schedules/${slug}`}>
       <div id={id} className="bg-scheduleContentBox/50 rounded-xl p-3 h-full">
         <div className="flex gap-3 justify-between p-2">
           <span className="text-xs text-slate-900 font-thin">{category}</span>

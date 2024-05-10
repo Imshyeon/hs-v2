@@ -45,7 +45,7 @@ const ScheduleDetailPage: NextPage<MyPageProps> = ({ params }) => {
       }
     };
     fetchData();
-  }, [scheduleSlug]);
+  }, []);
   console.log(scheduleData);
 
   if (!scheduleData) {

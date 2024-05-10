@@ -1,7 +1,4 @@
-interface DetailPageHashtag {
-  hashtag: string;
-}
-export default function DetailPageHashtag({ hashtag }: DetailPageHashtag) {
+export default function DetailPageHashtag({ hashtag }: { hashtag: string }) {
   return (
     <section
       id="schedule-footer"

@@ -82,3 +82,42 @@ export interface UserProfileInfos {
   password: string;
   password_confirm: string;
 }
+
+// ==== articles ====
+export interface Articles {
+  _id: string;
+  title: string;
+  category: string;
+  slug: string;
+  date: string;
+  contents: [
+    {
+      _id: string;
+      content_title: string;
+      content_place?: string;
+      content: [
+        {
+          _id: string;
+          detail: string;
+          image: string;
+          reference: string;
+        }
+      ];
+    }
+  ];
+  hashtags: string;
+}
+
+export interface ArticleContents {
+  _id: string;
+  content_title: string;
+  content_place?: string;
+  content: [
+    {
+      _id: string;
+      detail: string;
+      image: string;
+      reference: string;
+    }
+  ];
+}

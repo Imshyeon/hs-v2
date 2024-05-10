@@ -1,6 +1,6 @@
 "use client";
 import CardItem from "./card-item";
-import { Schedule } from "@/util/interfaces";
+import { Articles, Schedule } from "@/util/interfaces";
 import { useDispatch } from "react-redux";
 import { scheduleActions } from "@/store/schedules";
 
@@ -13,7 +13,7 @@ interface CardListProps {
   showBookMark: boolean;
   isMarked?: boolean;
   schedules?: Schedule[];
-  articles?: [];
+  articles?: Articles[];
   order?: string;
 }
 
@@ -79,7 +79,21 @@ export default function CardList({
             </article>
           );
         })}
-      {articles.length > 0 && <p>Article</p>}
+      {articles.length > 0 &&
+        articles.map((article) => {
+          return (
+            <article key={article._id}>
+              <CardItem
+                id={article._id!}
+                title={article.title}
+                category={article.category}
+                date={article.date}
+                image={article.contents[0].content[0].image || "/pandas2.jpeg"}
+                article={true}
+              />
+            </article>
+          );
+        })}
     </div>
   );
 }

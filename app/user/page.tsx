@@ -26,7 +26,9 @@ export default function UserProfilePage() {
   return (
     <div className="p-4 mt-2">
       <section>
-        <h1 className="text-3xl font-bold pb-2 border-b-2">{name}</h1>
+        <h1 className="text-3xl font-bold pb-2 border-b-2">
+          {name.toUpperCase()}
+        </h1>
       </section>
       <section id="user-profile-infos" className="mt-5 ml-2">
         <h2 className="text-xl font-bold">USER INFORMATIONS</h2>

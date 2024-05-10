@@ -3,9 +3,25 @@
 "use client";
 import CardList from "@/components/ui/card-list";
 import Pagination from "@/components/ui/pagination";
+import { RootState } from "@/store";
+import { articlesActions } from "@/store/articles";
+import { Articles } from "@/util/interfaces";
 import { Select, SelectItem } from "@nextui-org/react";
+import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 
 export default function AllArticles() {
+  const dispatch = useDispatch();
+  const { articles } = useSelector((state: RootState) => state.article);
+  useEffect(() => {
+    const fetchArticles = async () => {
+      const articles: Articles = await getAllArticles();
+      dispatch(articlesActions.setAllArticles(articles));
+      return articles;
+    };
+    fetchArticles();
+  }, []);
+
   return (
     <div className="p-4 mt-2 flex flex-col gap-5">
       <h1 className="text-3xl font-extrabold">ARTICLES</h1>
@@ -19,10 +35,16 @@ export default function AllArticles() {
           <SelectItem key="latest">최신순</SelectItem>
           <SelectItem key="oldest">생성순</SelectItem>
         </Select>
-        <CardList showBookMark={false} articles={[]} />
+        <CardList showBookMark={false} articles={articles} />
       </div>
       {/* 페이지 네이션 */}
       <Pagination />
     </div>
   );
+}
+
+export async function getAllArticles() {
+  const response = await fetch("/api/articles");
+  const articles = await response.json();
+  return articles;
 }
