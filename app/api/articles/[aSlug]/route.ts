@@ -38,3 +38,22 @@ export async function DELETE(
     throw Error(err);
   }
 }
+
+export async function PUT(req: Request, res: Response) {
+  try {
+    connectDB();
+    const updatedData = await req.json();
+    const slug = slugify(updatedData.slug, {
+      replacement: "-", // 제거된 문자 대신 '-' 사용
+      remove: /[*+~.()'"!:@]/g,
+      trim: true,
+    });
+    const updatedArticle = await ArticleModel.findOneAndUpdate(
+      { slug: slug },
+      updatedData
+    );
+    return NextResponse.json(updatedArticle);
+  } catch (err: any) {
+    throw Error(err);
+  }
+}

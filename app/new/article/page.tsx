@@ -12,7 +12,7 @@ import {
   Textarea,
 } from "@nextui-org/react";
 import { format } from "date-fns";
-import { Articles } from "@/util/interfaces";
+import { Articles, NewArticles } from "@/util/interfaces";
 import { ChangeEvent, useState } from "react";
 import slugify from "slugify";
 import { useRouter } from "next/navigation";
@@ -21,20 +21,17 @@ type ImageState = {
   [folderName: string]: string[];
 };
 
-const initialValues: Articles = {
-  _id: "",
+const initialValues: NewArticles = {
   title: "",
   category: "",
   date: format(new Date(), "yyyy-MM-dd"),
   slug: "",
   contents: [
     {
-      _id: "",
       content_title: "",
       content_place: "",
       content: [
         {
-          _id: "",
           detail: "",
           image: "",
           reference: "",
@@ -89,7 +86,8 @@ export default function NewArticlePage() {
     }
   }
 
-  async function postArticleHandler(values: Articles) {
+  async function postArticleHandler(values: NewArticles) {
+    console.log(values);
     const slug = slugify(values.title, {
       replacement: "-", // 제거된 문자 대신 '-' 사용
       remove: /[*+~.()'"!:@]/g,
@@ -98,8 +96,9 @@ export default function NewArticlePage() {
     });
 
     values.contents.map((content, index) => {
-      content.content.map((c) => {
-        c.image = imageURL[content.content_title][index];
+      content.content.map((c, idx) => {
+        console.log("image=>", c);
+        c.image = imageURL[content.content_title][index][idx];
       });
     });
 

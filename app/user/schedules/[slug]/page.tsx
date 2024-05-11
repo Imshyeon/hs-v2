@@ -56,7 +56,6 @@ const ScheduleDetailPage: NextPage<MyPageProps> = ({ params }) => {
   const endDate = `${scheduleData.date.end.year}-${scheduleData.date.end.month}-${scheduleData.date.end.day}`;
 
   async function handleRePostClick() {
-    console.log(`repost ${scheduleSlug}`);
     router.push(`/new/schedule/${scheduleSlug}`); // 해당 url로 리다이렉션 -> 데이터를 불러와서 수정할수 있도록...
   }
   function handleDeleteClick() {

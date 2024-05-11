@@ -108,6 +108,27 @@ export interface Articles {
   hashtags: string;
 }
 
+export interface NewArticles {
+  title: string;
+  category: string;
+  slug: string;
+  date: string;
+  contents: [
+    {
+      content_title: string;
+      content_place?: string;
+      content: [
+        {
+          detail: string;
+          image: string;
+          reference: string;
+        }
+      ];
+    }
+  ];
+  hashtags: string;
+}
+
 export interface ArticleContents {
   _id: string;
   content_title: string;

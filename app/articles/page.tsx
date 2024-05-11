@@ -16,6 +16,7 @@ export default function AllArticles() {
   useEffect(() => {
     const fetchArticles = async () => {
       const articles: Articles = await getAllArticles();
+      console.log(articles);
       dispatch(articlesActions.setAllArticles(articles));
       return articles;
     };

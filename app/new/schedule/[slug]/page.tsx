@@ -76,7 +76,7 @@ export default function NewSchedulePage({
       setLoading(false);
     };
     fetchData();
-  }, [scheduleSlug]);
+  }, []);
 
   async function handleFileUpload(event: any, upper: number, current: number) {
     event.preventDefault();

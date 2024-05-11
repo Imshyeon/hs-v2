@@ -65,7 +65,7 @@ const ArticleDetailPage: NextPage<MyArticlaPageProps> = ({ params }) => {
         date={articleDatas.date}
         key={articleDatas._id}
         onDeleteClick={handleDeleteClick}
-        onRePostClick={() => console.log("repost")}
+        onRePostClick={() => router.push(`/new/article/${slug}`)}
         onShareClick={() => console.log("share")}
       />
       <section id="schedule-content" className="p-10 mt-5 ml-4">
