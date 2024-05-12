@@ -2,7 +2,7 @@ import Link from "next/link";
 export default function Pagination() {
   return (
     <nav className="mt-5 flex gap-2 justify-center items-center text-center text-zinc-500">
-      <Link href={"#"} className="hover:text-black p-1">
+      <Link href={"#"} className="hover:text-black p-1 dark:hover:text-white">
         <svg
           xmlns="http://www.w3.org/2000/svg"
           viewBox="0 0 24 24"
@@ -18,23 +18,23 @@ export default function Pagination() {
       </Link>
       <Link
         href={"#"}
-        className="hover:text-black p-1 hover:underline hover:underline-offset-2"
+        className="hover:text-black p-1 hover:underline hover:underline-offset-2 dark:hover:text-white"
       >
         1
       </Link>
       <Link
         href={"#"}
-        className="hover:text-black p-1 hover:underline hover:underline-offset-2"
+        className="hover:text-black p-1 hover:underline hover:underline-offset-2 dark:hover:text-white"
       >
         2
       </Link>
       <Link
         href={"#"}
-        className="hover:text-black p-1 hover:underline hover:underline-offset-2"
+        className="hover:text-black p-1 hover:underline hover:underline-offset-2 dark:hover:text-white"
       >
         3
       </Link>
-      <Link href={"#"} className="hover:text-black p-1">
+      <Link href={"#"} className="hover:text-black p-1 dark:hover:text-white">
         <svg
           xmlns="http://www.w3.org/2000/svg"
           viewBox="0 0 24 24"
