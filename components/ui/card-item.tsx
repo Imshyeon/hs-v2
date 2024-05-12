@@ -21,11 +21,15 @@ export default function CardItem({
   return (
     <Link href={article ? `/articles/${slug}` : `/user/schedules/${slug}`}>
       <div id={id} className="bg-scheduleContentBox/50 rounded-xl p-3 h-full">
-        <div className="flex gap-3 justify-between p-2">
-          <span className="text-xs text-slate-900 font-thin">{category}</span>
-          <span className="text-xs text-slate-900 font-thin">{date}</span>
+        <div className="flex gap-3 justify-between p-3 h-1/6">
+          <span className="text-xs text-slate-900 font-thin dark:text-zinc-100">
+            {category}
+          </span>
+          <span className="text-xs text-slate-900 font-thin dark:text-zinc-100">
+            {date}
+          </span>
         </div>
-        <div className="flex flex-col relative h-full">
+        <div className="flex flex-col relative h-5/6">
           <Image
             src={image ? image : "/pandas.jpeg"}
             alt={image ? image : "default img"}

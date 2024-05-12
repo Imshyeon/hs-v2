@@ -214,7 +214,7 @@ export default function NewSchedulePage() {
                             size="default"
                           />
                         </div>
-                        <div className="flex flex-col bg-scheduleContentBox p-4 rounded-xl gap-4">
+                        <div className="flex flex-col bg-scheduleContentBox p-4 rounded-xl gap-4 dark:bg-zinc-800">
                           <FieldArray name={`contents.${idx}.content`}>
                             {({ push, remove }) => (
                               <>
@@ -235,9 +235,9 @@ export default function NewSchedulePage() {
                                           )
                                         }
                                         accept="image/*"
-                                        className="border p-2 focus:outline-none rounded-xl w-full"
+                                        className="border p-2 focus:outline-none rounded-xl w-full mb-2"
                                       />
-                                      <div className="bg-white border rounded-xl w-full p-2 flex flex-col">
+                                      <div className="bg-white border rounded-xl w-full p-2 flex flex-col dark:bg-transparent">
                                         <Field
                                           as={Textarea}
                                           name={content_detail}
@@ -254,7 +254,7 @@ export default function NewSchedulePage() {
                                                 xmlns="http://www.w3.org/2000/svg"
                                                 viewBox="0 0 24 24"
                                                 fill="currentColor"
-                                                className="w-5 h-5 fill-slate-400 hover:fill-black cursor-pointer"
+                                                className="w-5 h-5 fill-slate-400 hover:fill-black cursor-pointer dark:hover:fill-white"
                                               >
                                                 <path
                                                   fillRule="evenodd"
@@ -361,7 +361,7 @@ export default function NewSchedulePage() {
                         ],
                       })
                     }
-                    className="w-full bg-white border border-dashed rounded-xl p-2 py-4 text-slate-400/40 hover:text-slate-500 hover:border-slate-500 flex items-center gap-2 justify-center"
+                    className="w-full bg-white border border-dashed rounded-xl p-2 py-4 text-slate-400/40 hover:text-slate-500 hover:border-slate-500 flex items-center gap-2 justify-center dark:bg-transparent dark:hover:bg-slate-200"
                   >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -408,7 +408,7 @@ export default function NewSchedulePage() {
             </div>
             <Button
               type="submit"
-              className="self-end px-5 py-2 bg-createScheduleBtn hover:bg-createScheduleBtn_hover rounded-xl"
+              className="self-end px-5 py-2 bg-createScheduleBtn hover:bg-createScheduleBtn_hover rounded-xl dark:text-black"
             >
               완료
             </Button>

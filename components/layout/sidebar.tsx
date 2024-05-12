@@ -20,7 +20,7 @@ export default function Sidebar({
     .filter((schedule) => !schedule.isMarked)
     .slice(0, 4);
   return (
-    <nav className="flex flex-col flex-grow-0 flex-shrink relative w-60 text-center p-8 bg-layout-sidebar-default z-10">
+    <nav className="flex flex-col flex-grow-0 flex-shrink relative w-60 text-center p-8 bg-layout-sidebar-default z-10 dark:bg-zinc-900">
       <SidebarLinkBtn />
       <ul className="flex flex-col gap-5 mt-8">
         {markedSchedules &&
@@ -48,11 +48,11 @@ export default function Sidebar({
       </ul>
 
       <ul className="absolute inset-x-0 bottom-1 flex flex-col space-y-1">
-        <Button className="bg-layout-sidebar hover:bg-white p-2">
+        <Button className="bg-layout-sidebar hover:bg-white p-2 dark:hover:text-black">
           <Link href={"/login"}>로그인/로그아웃</Link>
         </Button>
-        <Button className="bg-layout-sidebar hover:bg-white p-2">
-          <Link href={"/signup"} className="hover:bg-white p-2">
+        <Button className="bg-layout-sidebar hover:bg-white p-2 dark:hover:text-black">
+          <Link href={"/signup"} className="hover:bg-white p-2 ">
             회원가입
           </Link>
         </Button>

@@ -21,7 +21,7 @@ export default async function RootLayout({
 }>) {
   const { allSchedules } = await getAllSchedulesData();
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body className={inter.className}>
         <Providers>
           <div className="flex w-screen h-screen">

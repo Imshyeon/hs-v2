@@ -21,7 +21,7 @@ export default function UserProfilePage() {
       dispatch(profileActions.updateUserInfos(infos));
     };
     getInfos();
-  }, []);
+  }, [dispatch]);
 
   return (
     <div className="p-4 mt-2">
@@ -42,7 +42,7 @@ export default function UserProfilePage() {
             <svg
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 24 24"
-              className="w-6 h-6 fill-profileGoToBtn stroke-gray-100"
+              className="w-6 h-6 fill-profileGoToBtn "
             >
               <path
                 fillRule="evenodd"

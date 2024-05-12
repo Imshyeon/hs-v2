@@ -16,7 +16,7 @@ export default function DetailPageContentList({
   return (
     <div
       id={id}
-      className="bg-scheduleContentBox p-7 mt-2 ml-2 mr-3 rounded-2xl"
+      className="bg-scheduleContentBox p-7 mt-2 ml-2 mr-3 rounded-2xl dark:bg-scheduleContentBox-dark"
     >
       {content.length > 0 &&
         content.map((content) => (

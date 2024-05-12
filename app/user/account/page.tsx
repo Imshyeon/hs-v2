@@ -40,7 +40,7 @@ export default function FindAccountPage() {
               <div className="justify-center mt-5">
                 <Button
                   type="submit"
-                  className="p-3 bg-signupBtn hover:bg-signupBtn_hover w-2/3 rounded-xl"
+                  className="p-3 bg-signupBtn hover:bg-signupBtn_hover w-2/3 rounded-xl dark:text-black"
                 >
                   아이디 찾기
                 </Button>
@@ -65,7 +65,7 @@ export default function FindAccountPage() {
               <div className="justify-center mt-5">
                 <Button
                   type="submit"
-                  className="p-3 bg-signupBtn hover:bg-signupBtn_hover w-2/3 rounded-xl"
+                  className="p-3 bg-signupBtn hover:bg-signupBtn_hover w-2/3 rounded-xl dark:text-black"
                 >
                   비밀번호 찾기
                 </Button>

@@ -33,7 +33,7 @@ export default function DetailPageInfo({
     <section id="schedule-info" className="p-6">
       <div id="schedule-title-and-actions" className="flex justify-between">
         <h1 className="font-extrabold text-3xl">{title}</h1>
-        <div id="schedule-action" className="flex gap-3 mr-5 text-slate-600">
+        <div id="schedule-action" className="flex gap-3 mr-5 text-slate-600 ">
           <button id="schedule-re-post" onClick={handleRePostClick}>
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -74,17 +74,20 @@ export default function DetailPageInfo({
       <div className="mt-3 flex gap-4">
         <div
           id="category"
-          className="bg-scheduleInfo px-2 py-1 rounded-xl w-fit"
+          className="bg-scheduleInfo px-2 py-1 rounded-xl w-fit dark:bg-scheduleInfo-dark"
         >
           {category}
         </div>
-        <div id="date" className="bg-scheduleInfo px-2 py-1 rounded-xl w-fit">
+        <div
+          id="date"
+          className="bg-scheduleInfo px-2 py-1 rounded-xl w-fit dark:bg-scheduleInfo-dark"
+        >
           {date}
         </div>
         {place ? (
           <div
             id="place"
-            className="bg-scheduleInfo px-2 py-1 rounded-xl w-fit"
+            className="bg-scheduleInfo px-2 py-1 rounded-xl w-fit dark:bg-scheduleInfo-dark"
           >
             {place}
           </div>

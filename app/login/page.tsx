@@ -43,7 +43,7 @@ export default function LoginPage() {
             <div className="justify-center mt-5">
               <Button
                 type="submit"
-                className="p-3 bg-signupBtn hover:bg-signupBtn_hover w-2/3 rounded-xl"
+                className="p-3 bg-signupBtn hover:bg-signupBtn_hover w-2/3 rounded-xl dark:text-black"
               >
                 로그인하기
               </Button>
