@@ -26,14 +26,9 @@ export default async function RootLayout({
         <Providers>
           <div className="flex w-screen h-screen">
             <Sidebar allSchedules={allSchedules} />
-            <>
-              <div
-                id="main"
-                className="relative w-full overflow-y-auto p-8 z-0"
-              >
-                {children}
-              </div>
-            </>
+            <div id="main" className="relative w-full overflow-y-auto p-8 z-0">
+              {children}
+            </div>
             <UserActionBtn />
           </div>
           <Footer />

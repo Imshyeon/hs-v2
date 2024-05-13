@@ -1,4 +1,5 @@
 "use client";
+// 쿠키 이용하기 : https://github.com/vercel/next.js/discussions/53063
 import Link from "next/link";
 import { Button } from "@nextui-org/react";
 import { Switch } from "@nextui-org/react";

@@ -24,7 +24,6 @@ export default function DetailPageContent({
         className="rounded-tl-lg rounded-br-lg"
       />
       <p>{content}</p>
-      {/* 참고 링크 -> bootstrap의 popover처럼 모달을 이용해서..! */}
       {reference ? (
         <span className="absolute right-0 bottom-0 font-light p-2 text-slate-500 flex gap-1 items-center hover:text-slate-800 cursor-pointer dark:hover:text-white">
           <Popover placement="top">

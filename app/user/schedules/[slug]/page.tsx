@@ -8,6 +8,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useDisclosure } from "@nextui-org/react";
 import ModalComponent from "@/components/modal/modal";
+import DetailPageLoading from "@/components/detail-page/loading/detail-loading";
 
 interface MyPageProps {
   params: { slug: string };
@@ -45,11 +46,11 @@ const ScheduleDetailPage: NextPage<MyPageProps> = ({ params }) => {
       }
     };
     fetchData();
-  }, []);
+  }, [scheduleSlug]);
   console.log(scheduleData);
 
   if (!scheduleData) {
-    return <div>Loading...</div>;
+    return <DetailPageLoading />;
   }
 
   const startDate = `${scheduleData.date.start.year}-${scheduleData.date.start.month}-${scheduleData.date.start.day}`;
