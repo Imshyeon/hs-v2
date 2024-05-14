@@ -6,7 +6,6 @@ import UserActionBtn from "@/components/layout/user-action-btn";
 import Footer from "@/components/layout/footer";
 import { Providers } from "./provider";
 import { Schedule } from "@/util/interfaces";
-import Alert from "@/components/ui/alert";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -28,6 +27,7 @@ export default async function RootLayout({
           <div className="flex w-screen h-screen">
             <Sidebar allSchedules={allSchedules} />
             <div id="main" className="relative w-full overflow-y-auto p-8 z-0">
+              <div id="notifications"></div>
               {children}
             </div>
             <UserActionBtn />

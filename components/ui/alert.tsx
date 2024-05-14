@@ -1,41 +1,45 @@
-import {
-  Modal,
-  ModalBody,
-  ModalContent,
-  useDisclosure,
-} from "@nextui-org/react";
 import { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 
-export default function Alert({
-  message,
-  status,
-}: {
+type Status = "success" | "pending" | "failure";
+
+interface AlertProps {
   message: string;
-  status: "success" | "danger" | "warning";
-}) {
-  const [remaingTime, setRemainingTime] = useState<number>(3);
+  status: Status;
+}
+
+export default function Alert({ message, status }: AlertProps) {
+  const [isClient, setIsClient] = useState<boolean>(false);
   useEffect(() => {
-    setInterval(() => {
-      setRemainingTime((prevRemainingTime) => prevRemainingTime - 1 / 2);
-    }, 1000);
+    setIsClient(true);
   }, []);
 
-  return (
-    <Modal
-      className="w-1/5 h-auto absolute top-0 right-0"
-      isOpen={remaingTime <= 0 ? false : true}
-      size="lg"
-      backdrop="transparent"
-      hideCloseButton={true}
+  if (!isClient) {
+    return null;
+  }
+
+  let bgClasses = "";
+  if (status === "success") {
+    bgClasses = "bg-emerald-300";
+  } else if (status === "failure") {
+    bgClasses = "bg-red-400";
+  } else {
+    bgClasses = "bg-amber-300";
+  }
+
+  return createPortal(
+    <div
+      className={`w-1/5 h-auto absolute top-2 right-2 border dark:border-black shadow-lg rounded-lg ${bgClasses}`}
     >
-      <ModalContent>
-        <ModalBody>
-          <p className={`px-4 py-2 text-center text-${status}`}>
+      <div>
+        <>
+          <p className="px-4 py-2 text-center dark:text-black">
             {message ||
               "Make beautiful websites regardless of your design experience."}
           </p>
-        </ModalBody>
-      </ModalContent>
-    </Modal>
+        </>
+      </div>
+    </div>,
+    document.getElementById("notifications") as HTMLDivElement
   );
 }
