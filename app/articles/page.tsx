@@ -1,27 +1,60 @@
 // 전체 아티클 페이지
 // Next.js SSR - getAllArticles
 "use client";
+import ArticleLoading from "@/components/detail-page/loading/article-list-loading";
 import CardList from "@/components/ui/card-list";
 import Pagination from "@/components/ui/pagination";
 import { RootState } from "@/store";
+import { alertActions } from "@/store/alert";
 import { articlesActions } from "@/store/articles";
-import { Articles } from "@/util/interfaces";
 import { Select, SelectItem } from "@nextui-org/react";
+import { useQuery } from "@tanstack/react-query";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 export default function AllArticles() {
   const dispatch = useDispatch();
   const { articles } = useSelector((state: RootState) => state.article);
+
+  const { data, isError, error, isPending } = useQuery({
+    queryKey: ["articles"],
+    queryFn: getAllArticles,
+  });
+
   useEffect(() => {
-    const fetchArticles = async () => {
-      const articles: Articles = await getAllArticles();
-      dispatch(articlesActions.setAllArticles(articles));
-      return articles;
-    };
-    fetchArticles();
-  }, [dispatch]);
-  console.log(articles);
+    if (isPending) {
+      dispatch(
+        alertActions.setAlertState({
+          status: "pending",
+          message: "모든 Articles를 불러오는 중입니다.",
+        })
+      );
+    }
+
+    if (data) {
+      dispatch(articlesActions.setAllArticles(data));
+      dispatch(
+        alertActions.setAlertState({
+          status: "success",
+          message: "모든 Articles를 불러오는데 성공했습니다.",
+        })
+      );
+    }
+
+    if (isError) {
+      dispatch(
+        alertActions.setAlertState({
+          status: "failure",
+          message: error.message,
+        })
+      );
+    }
+  }, [data, isError, error, isPending, dispatch]);
+
+  if (isPending) {
+    return <ArticleLoading />;
+  }
+
   return (
     <div className="p-4 mt-2 flex flex-col gap-5">
       <h1 className="text-3xl font-extrabold">ARTICLES</h1>

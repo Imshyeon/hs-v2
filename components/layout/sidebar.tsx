@@ -3,21 +3,20 @@ import SidebarLinkBtn from "../ui/sidebar-link-btn";
 import Link from "next/link";
 import { Button } from "@nextui-org/button";
 import { Schedule } from "@/util/interfaces";
-import { useDispatch } from "react-redux";
-import { scheduleActions } from "@/store/schedules";
+import { useQuery } from "@tanstack/react-query";
 
-export default function Sidebar({
-  allSchedules,
-}: {
-  allSchedules: Schedule[];
-}) {
-  const dispatch = useDispatch();
-  dispatch(scheduleActions.setAllSchedules({ allSchedules }));
+export default function Sidebar() {
+  const { data } = useQuery({
+    queryKey: ["schedules"],
+    queryFn: getAllSchedulesData,
+  });
 
-  const markedSchedules = allSchedules.filter((schedule) => schedule.isMarked);
+  const schedule = data?.allSchedules;
 
-  const schedulesExceptMarked = allSchedules
-    .filter((schedule) => !schedule.isMarked)
+  const markedSchedules = schedule?.filter((schedule) => schedule.isMarked);
+
+  const schedulesExceptMarked = schedule
+    ?.filter((schedule) => !schedule.isMarked)
     .slice(0, 4);
   return (
     <nav className="flex flex-col flex-grow-0 flex-shrink relative w-60 text-center p-8 bg-layout-sidebar-default z-10 dark:bg-zinc-900">
@@ -59,4 +58,19 @@ export default function Sidebar({
       </ul>
     </nav>
   );
+}
+
+export async function getAllSchedulesData() {
+  try {
+    const response = await fetch("http://localhost:3000/api/schedules");
+
+    if (!response.ok) {
+      throw Error("스케줄 불러오는데 실패했습니다.");
+    }
+    const allSchedules: Schedule[] = await response.json();
+
+    return { allSchedules };
+  } catch (err: any) {
+    throw Error("스케줄 불러오는데 실패했습니다.", err);
+  }
 }

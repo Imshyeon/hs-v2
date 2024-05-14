@@ -5,7 +5,7 @@ import Sidebar from "@/components/layout/sidebar";
 import UserActionBtn from "@/components/layout/user-action-btn";
 import Footer from "@/components/layout/footer";
 import { Providers } from "./provider";
-import { Schedule } from "@/util/interfaces";
+import Alert from "@/components/ui/alert";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -19,14 +19,14 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const { allSchedules } = await getAllSchedulesData();
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={inter.className}>
         <Providers>
           <div className="flex w-screen h-screen">
-            <Sidebar allSchedules={allSchedules} />
+            <Sidebar />
             <div id="main" className="relative w-full overflow-y-auto p-8 z-0">
+              <Alert />
               <div id="notifications"></div>
               {children}
             </div>
@@ -37,19 +37,4 @@ export default async function RootLayout({
       </body>
     </html>
   );
-}
-
-export async function getAllSchedulesData() {
-  try {
-    const response = await fetch("http://localhost:3000/api/schedules");
-
-    if (!response.ok) {
-      throw Error("스케줄 불러오는데 실패했습니다.");
-    }
-    const allSchedules: Schedule[] = await response.json();
-
-    return { allSchedules };
-  } catch (err: any) {
-    throw Error("스케줄 불러오는데 실패했습니다.", err);
-  }
 }

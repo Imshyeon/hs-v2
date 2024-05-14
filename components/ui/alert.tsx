@@ -1,5 +1,9 @@
+"use client";
+import { RootState } from "@/store";
+import { alertActions } from "@/store/alert";
 import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
+import { useDispatch, useSelector } from "react-redux";
 
 type Status = "success" | "pending" | "failure";
 
@@ -8,7 +12,7 @@ interface AlertProps {
   status: Status;
 }
 
-export default function Alert({ message, status }: AlertProps) {
+export function AlertComponent({ message, status }: AlertProps) {
   const [isClient, setIsClient] = useState<boolean>(false);
   useEffect(() => {
     setIsClient(true);
@@ -18,14 +22,11 @@ export default function Alert({ message, status }: AlertProps) {
     return null;
   }
 
-  let bgClasses = "";
-  if (status === "success") {
-    bgClasses = "bg-emerald-300";
-  } else if (status === "failure") {
-    bgClasses = "bg-red-400";
-  } else {
-    bgClasses = "bg-amber-300";
-  }
+  const bgClasses = {
+    success: "bg-emerald-300",
+    pending: "bg-amber-300",
+    failure: "bg-red-400",
+  }[status];
 
   return createPortal(
     <div
@@ -42,4 +43,20 @@ export default function Alert({ message, status }: AlertProps) {
     </div>,
     document.getElementById("notifications") as HTMLDivElement
   );
+}
+
+export default function Alert() {
+  const { status, message } = useSelector((state: RootState) => state.alert);
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    if (status === "success" || status === "failure") {
+      const timer = setTimeout(() => {
+        dispatch(alertActions.setAlertState({ status: null, message: "" }));
+      }, 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [status, dispatch]);
+
+  return status ? <AlertComponent status={status} message={message} /> : null;
 }

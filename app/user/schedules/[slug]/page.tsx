@@ -4,11 +4,15 @@ import { NextPage } from "next";
 import EntireContentList from "@/components/detail-page/content/entire-content-list";
 import DetailPageHashtag from "@/components/detail-page/page-hashtag";
 import { Schedule } from "@/util/interfaces";
-import { useEffect, useState } from "react";
+// import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useDisclosure } from "@nextui-org/react";
 import ModalComponent from "@/components/modal/modal";
 import DetailPageLoading from "@/components/detail-page/loading/detail-loading";
+import { useDispatch } from "react-redux";
+import { alertActions } from "@/store/alert";
+import { useQuery } from "@tanstack/react-query";
+import { useEffect } from "react";
 
 interface MyPageProps {
   params: { slug: string };
@@ -33,28 +37,84 @@ const ScheduleDetailPage: NextPage<MyPageProps> = ({ params }) => {
   const router = useRouter();
   const scheduleSlug = decodeURIComponent(params.slug);
   const { onOpen, isOpen, onClose } = useDisclosure();
+  const dispatch = useDispatch();
 
-  const [scheduleData, setScheduleData] = useState<Schedule | null>(null);
+  const { data, isError, error, isPending } = useQuery({
+    queryKey: ["schedules", scheduleSlug],
+    queryFn: () => getDetailSchedule(scheduleSlug),
+  });
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const data = await getDetailSchedule(scheduleSlug);
-        setScheduleData(data);
-      } catch (error) {
-        console.error("Error fetching schedule data:", error);
-      }
-    };
-    fetchData();
-  }, [scheduleSlug]);
-  console.log(scheduleData);
+    if (isPending) {
+      dispatch(
+        alertActions.setAlertState({
+          status: "pending",
+          message: `${scheduleSlug}를 불러오는 중입니다.`,
+        })
+      );
+    }
 
-  if (!scheduleData) {
+    if (data) {
+      dispatch(
+        alertActions.setAlertState({
+          status: "success",
+          message: `${scheduleSlug}를 불러오는데 성공했습니다.`,
+        })
+      );
+    }
+
+    if (isError) {
+      dispatch(
+        alertActions.setAlertState({
+          status: "failure",
+          message: `${scheduleSlug}를 불러오는데 실패했습니다. ${error.message}`,
+        })
+      );
+    }
+  }, [data, isError, error, isPending, dispatch, scheduleSlug]);
+
+  if (isPending) {
     return <DetailPageLoading />;
   }
 
-  const startDate = `${scheduleData.date.start.year}-${scheduleData.date.start.month}-${scheduleData.date.start.day}`;
-  const endDate = `${scheduleData.date.end.year}-${scheduleData.date.end.month}-${scheduleData.date.end.day}`;
+  // const [scheduleData, setScheduleData] = useState<Schedule | null>(null);
+
+  // useEffect(() => {
+  //   dispatch(
+  //     alertActions.setAlertState({
+  //       status: "pending",
+  //       message: `${decodeURIComponent(params.slug)}를 불러오는 중입니다.`,
+  //     })
+  //   );
+  //   const fetchData = async () => {
+  //     try {
+  //       const data = await getDetailSchedule(scheduleSlug);
+  //       dispatch(
+  //         alertActions.setAlertState({
+  //           status: "success",
+  //           message: `${decodeURIComponent(
+  //             params.slug
+  //           )}을 성공적으로 불러왔습니다.`,
+  //         })
+  //       );
+  //       setScheduleData(data);
+  //     } catch (error) {
+  //       dispatch(
+  //         alertActions.setAlertState({ status: "failure", message: error })
+  //       );
+  //       console.error("Error fetching schedule data:", error);
+  //     }
+  //   };
+  //   fetchData();
+  // }, [scheduleSlug, dispatch, params]);
+  // console.log(scheduleData);
+
+  // if (!scheduleData) {
+  //   return <DetailPageLoading />;
+  // }
+
+  const startDate = `${data?.date.start.year}-${data?.date.start.month}-${data?.date.start.day}`;
+  const endDate = `${data?.date.end.year}-${data?.date.end.month}-${data?.date.end.day}`;
 
   async function handleRePostClick() {
     router.push(`/new/schedule/${scheduleSlug}`); // 해당 url로 리다이렉션 -> 데이터를 불러와서 수정할수 있도록...
@@ -63,45 +123,57 @@ const ScheduleDetailPage: NextPage<MyPageProps> = ({ params }) => {
     onOpen();
   }
   function handleShareClick() {
-    console.log(`share ${scheduleData!.slug}`);
+    console.log(`share ${data?.slug}`);
   }
 
   return (
     <div>
       {isOpen && (
         <ModalComponent
-          title={scheduleData.title}
+          title={data!.title}
           isOpen={isOpen}
           onClose={onClose}
-          onContinue={async () => {
-            const response = await fetch(
-              `http://localhost:3000/api/schedules/${scheduleSlug}`,
-              {
-                method: "DELETE",
+          onContinue={() => {
+            fetch(`http://localhost:3000/api/schedules/${scheduleSlug}`, {
+              method: "DELETE",
+            }).then((response) => {
+              if (!response.ok) {
+                dispatch(
+                  alertActions.setAlertState({
+                    status: "failure",
+                    message: `${data!.title}을 삭제하는데 실패했습니다.`,
+                  })
+                );
               }
-            );
-            console.log("response=>", response);
+              dispatch(
+                alertActions.setAlertState({
+                  status: "success",
+                  message: `${data!.title}을 삭제했습니다.`,
+                })
+              );
+            });
+
             router.push("/user/schedules");
           }}
         />
       )}
       <DetailPageInfo
-        title={scheduleData.title.toUpperCase()}
-        category={scheduleData.category}
+        title={data!.title.toUpperCase()}
+        category={data!.category}
         date={`${startDate} ~ ${endDate}`}
-        key={scheduleData._id}
-        place={scheduleData.place}
+        key={data!._id}
+        place={data!.place}
         onRePostClick={handleRePostClick}
         onDeleteClick={handleDeleteClick}
         onShareClick={handleShareClick}
       />
       <section id="schedule-content" className="p-10 mt-5 ml-4">
         <EntireContentList
-          contents={scheduleData.contents}
+          contents={data!.contents}
           date={[startDate, endDate]}
         />
       </section>
-      <DetailPageHashtag hashtag={scheduleData.hashtags} />
+      <DetailPageHashtag hashtag={data!.hashtags} />
     </div>
   );
 };
