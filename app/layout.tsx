@@ -6,6 +6,7 @@ import UserActionBtn from "@/components/layout/user-action-btn";
 import Footer from "@/components/layout/footer";
 import { Providers } from "./provider";
 import { Schedule } from "@/util/interfaces";
+import Alert from "@/components/ui/alert";
 
 const inter = Inter({ subsets: ["latin"] });
 
