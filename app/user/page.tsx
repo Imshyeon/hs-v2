@@ -6,22 +6,63 @@ import { RootState } from "@/store/index";
 import { useEffect } from "react";
 import { profileActions } from "@/store/user";
 import UserProfileComponent from "@/components/formik/userProfile";
+import { useQuery } from "@tanstack/react-query";
+import { alertActions } from "@/store/alert";
+import UserProfileLoading from "@/components/detail-page/loading/user-profile-loading";
+import { Schedule } from "@/util/interfaces";
 
 // 유저 프로필 페이지
 export default function UserProfilePage() {
   const { schedule } = useSelector((state: RootState) => state.schedule);
   const { name } = useSelector((state: RootState) => state.profile);
-  const markedSchedules = schedule.filter((schedule) => schedule.isMarked);
 
   const dispatch = useDispatch();
 
+  const { data, isError, error, isPending } = useQuery({
+    queryKey: ["user"],
+    queryFn: getUserInfos,
+  });
+
+  const { data: scheduleData } = useQuery({
+    queryKey: ["schedules"],
+    queryFn: getAllSchedulesData,
+  });
+
   useEffect(() => {
-    const getInfos = async () => {
-      const infos = await getUserInfos();
-      dispatch(profileActions.updateUserInfos(infos));
-    };
-    getInfos();
-  }, [dispatch]);
+    if (isPending) {
+      dispatch(
+        alertActions.setAlertState({
+          status: "pending",
+          message: "유저 데이터를 가져오고 있습니다.",
+        })
+      );
+    }
+    if (data) {
+      dispatch(profileActions.updateUserInfos(data));
+      dispatch(
+        alertActions.setAlertState({
+          status: "success",
+          message: "유저 데이터를 가져오는데 성공했습니다.",
+        })
+      );
+    }
+    if (isError) {
+      dispatch(
+        alertActions.setAlertState({
+          status: "failure",
+          message: error.message || "유저 데이터를 가져오는데 실패했습니다.",
+        })
+      );
+    }
+  }, [data, isError, error, isPending, dispatch]);
+
+  if (isPending) {
+    return <UserProfileLoading />;
+  }
+
+  const markedSchedules = scheduleData?.allSchedules.filter(
+    (schedule) => schedule.isMarked
+  );
 
   return (
     <div className="p-4 mt-2">
@@ -66,4 +107,19 @@ export async function getUserInfos() {
   const response = await fetch("/api/user");
   const userProfile = await response.json();
   return userProfile.at(-1);
+}
+
+export async function getAllSchedulesData() {
+  try {
+    const response = await fetch("http://localhost:3000/api/schedules");
+
+    if (!response.ok) {
+      throw Error("스케줄 불러오는데 실패했습니다.");
+    }
+    const allSchedules: Schedule[] = await response.json();
+
+    return { allSchedules };
+  } catch (err: any) {
+    throw Error("스케줄 불러오는데 실패했습니다.", err);
+  }
 }

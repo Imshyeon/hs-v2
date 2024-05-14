@@ -1,5 +1,6 @@
 "use client";
 import AllSchedulesComponent from "@/components/layout/allSchedules";
+import { Schedule } from "@/util/interfaces";
 
 // 유저의 전체 스케줄 페이지
 // Next.js SSR - getAllSchedules
