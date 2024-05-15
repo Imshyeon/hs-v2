@@ -13,9 +13,6 @@ import { Schedule } from "@/util/interfaces";
 
 // 유저 프로필 페이지
 export default function UserProfilePage() {
-  const { schedule } = useSelector((state: RootState) => state.schedule);
-  const { name } = useSelector((state: RootState) => state.profile);
-
   const dispatch = useDispatch();
 
   const { data, isError, error, isPending } = useQuery({
@@ -23,6 +20,7 @@ export default function UserProfilePage() {
     queryFn: getUserInfos,
   });
 
+  console.log("data=>", data);
   const { data: scheduleData } = useQuery({
     queryKey: ["schedules"],
     queryFn: getAllSchedulesData,
@@ -68,14 +66,19 @@ export default function UserProfilePage() {
     <div className="p-4 mt-2">
       <section>
         <h1 className="text-3xl font-bold pb-2 border-b-2">
-          {name.toUpperCase()}
+          {data && data.name ? data.name.toUpperCase() : "홍길동"}
         </h1>
       </section>
       <section id="user-profile-infos" className="mt-5 ml-2">
         <h2 className="text-xl font-bold">USER INFORMATIONS</h2>
-        <UserProfileComponent />
+        <UserProfileComponent
+          name={data.name}
+          email={data.email}
+          image={data.image}
+          password={data.password}
+          password_comfirm={data.password_comfirm}
+        />
       </section>
-      {/* schedules */}
       <section id="user-profile-schedules" className="mt-5 ml-2">
         <div className="flex gap-3 items-center">
           <h2 className="text-xl font-bold">SCHEDULES</h2>

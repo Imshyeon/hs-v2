@@ -6,12 +6,13 @@ import { connectDB, ProfileModel } from "@/util/db-util";
 import { NextResponse } from "next/server";
 
 // user profile
-export async function POST(req: Request, res: Response) {
+export async function PUT(req: Request, res: Response) {
   try {
-    connectDB();
+    await connectDB();
     const data = await req.json();
-    const userProfile = new ProfileModel(data);
-    await userProfile.save();
+    console.log(data);
+    const userProfile = await ProfileModel.updateOne({}, data);
+
     console.log(userProfile);
     return NextResponse.json({ message: "프로필 업로드 성공", data });
   } catch (err: any) {
@@ -21,8 +22,10 @@ export async function POST(req: Request, res: Response) {
 
 export async function GET(req: Request, res: Response) {
   try {
-    connectDB();
+    await connectDB();
     const userProfile = await ProfileModel.find({});
+    console.log(userProfile);
+    console.log(userProfile.at(-1));
     return NextResponse.json(userProfile);
   } catch (err) {
     return NextResponse.json({

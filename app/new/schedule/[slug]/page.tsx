@@ -17,6 +17,7 @@ import { useRouter } from "next/navigation";
 import { NewSchedule, Schedule } from "@/util/interfaces";
 import MyTextField from "@/components/formik/useTextField";
 import { useEffect, useState } from "react";
+import { ScheduleValidationSchema } from "@/util/validation";
 
 export async function getCurrentScheduleData(slug: string) {
   try {
@@ -76,7 +77,7 @@ export default function NewSchedulePage({
       setLoading(false);
     };
     fetchData();
-  }, []);
+  }, [scheduleSlug]);
 
   async function handleFileUpload(event: any, upper: number, current: number) {
     event.preventDefault();
@@ -109,6 +110,7 @@ export default function NewSchedulePage({
     <div className="p-10">
       <Formik
         initialValues={scheduleData}
+        validationSchema={ScheduleValidationSchema}
         onSubmit={async (values: NewSchedule) => {
           const slug = slugify(values.title, {
             replacement: "-", // 제거된 문자 대신 '-' 사용
@@ -253,7 +255,11 @@ export default function NewSchedulePage({
                                           handleFileUpload(e, idx, index)
                                         }
                                         accept="image/*"
-                                        className="border p-2 focus:outline-none rounded-xl w-full mb-2"
+                                        className="border p-2 focus:outline-none rounded-xl w-full mb-2 file:mr-4 file:py-2 file:px-4
+      file:rounded-full file:border-0
+      file:text-sm file:font-semibold
+      file:bg-violet-50 file:text-violet-700
+      hover:file:bg-violet-100 cursor-pointer"
                                       />
                                       <div className="bg-white border rounded-xl w-full p-2 flex flex-col dark:bg-transparent">
                                         <Field
@@ -346,13 +352,14 @@ export default function NewSchedulePage({
                         <Button
                           type="button"
                           onClick={() => remove(idx)}
-                          className="absolute right-2 bg-transparent"
+                          disabled={values.contents.length === 1 ? true : false}
+                          className="absolute right-2 bg-transparent group disabled:cursor-not-allowed"
                         >
                           <svg
                             xmlns="http://www.w3.org/2000/svg"
                             viewBox="0 0 24 24"
                             fill="currentColor"
-                            className="w-6 h-6 fill-slate-400/40 hover:fill-red-600"
+                            className="w-6 h-6 fill-slate-400/40 group-hover:fill-red-600"
                           >
                             <path
                               fillRule="evenodd"

@@ -12,10 +12,11 @@ import {
   Textarea,
 } from "@nextui-org/react";
 import { format } from "date-fns";
-import { Articles, NewArticles } from "@/util/interfaces";
+import { Articles } from "@/util/interfaces";
 import { ChangeEvent, useEffect, useState } from "react";
 import slugify from "slugify";
 import { useRouter } from "next/navigation";
+import { ArticleValidationSchema } from "@/util/validation";
 
 type ImageState = {
   [folderName: string]: string[];
@@ -154,6 +155,7 @@ export default function NewArticlePage({
       <div className="p-10">
         <Formik
           initialValues={articleData}
+          validationSchema={ArticleValidationSchema}
           onSubmit={(values: Articles) => postArticleHandler(values)}
         >
           {({ values, touched, errors }) => (
@@ -233,7 +235,11 @@ export default function NewArticlePage({
                                             )
                                           }
                                           accept="image/*"
-                                          className="border p-2 focus:outline-none rounded-xl w-full mb-2"
+                                          className="border p-2 focus:outline-none rounded-xl w-full mb-2 file:mr-4 file:py-2 file:px-4
+      file:rounded-full file:border-0
+      file:text-sm file:font-semibold
+      file:bg-violet-50 file:text-violet-700
+      hover:file:bg-violet-100 cursor-pointer"
                                         />
                                         <div className="bg-white border rounded-xl w-full p-2 flex flex-col dark:bg-transparent">
                                           <Field
@@ -326,13 +332,16 @@ export default function NewArticlePage({
                           <Button
                             type="button"
                             onClick={() => remove(idx)}
-                            className="absolute right-2 bg-transparent"
+                            disabled={
+                              values.contents.length === 1 ? true : false
+                            }
+                            className="absolute right-2 bg-transparent group disabled:cursor-not-allowed"
                           >
                             <svg
                               xmlns="http://www.w3.org/2000/svg"
                               viewBox="0 0 24 24"
                               fill="currentColor"
-                              className="w-6 h-6 fill-slate-400/40 hover:fill-red-600"
+                              className="w-6 h-6 fill-slate-400/40 group-hover:fill-red-600"
                             >
                               <path
                                 fillRule="evenodd"

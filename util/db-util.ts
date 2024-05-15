@@ -55,15 +55,11 @@ const articleSchema = new mongoose.Schema({
 });
 
 const profileSchema = new mongoose.Schema({
-  profileObject: {
-    type: Object,
-    unique: true,
-    name: String,
-    image: String,
-    email: String,
-    password: String,
-    password_confirm: String,
-  },
+  name: String,
+  image: String,
+  email: String,
+  password: String,
+  password_confirm: String,
 });
 
 export const ScheduleModel =
@@ -79,6 +75,19 @@ export const ProfileModel =
 export async function connectDB() {
   try {
     await mongoose.connect("mongodb://127.0.0.1:27017/holiday_schedule");
+    const profileCount = await ProfileModel.countDocuments();
+    if (profileCount === 0) {
+      console.log("Initializing profile model...");
+      const initialProfile = new ProfileModel({
+        name: "홍길동",
+        email: "example@example.com",
+        image: "",
+        password: "",
+        password_confirm: "",
+      });
+      await initialProfile.save();
+      console.log("Profile model initialized.", initialProfile);
+    }
   } catch (err) {
     throw Error("데이터베이스 연결 실패");
   }

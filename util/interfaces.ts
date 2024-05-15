@@ -65,7 +65,7 @@ export interface NewSchedule {
       content: [
         {
           detail: string;
-          image?: string | undefined;
+          image: string;
           reference: string;
         }
       ];

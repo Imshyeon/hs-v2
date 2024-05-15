@@ -2,7 +2,7 @@
 
 // 참고 : https://codesandbox.io/p/sandbox/formik-fieldarray-materialui-f7rkz?file=%2Fsrc%2Fform.js%3A79%2C28
 
-import { Formik, Form, Field, FieldArray, useFormik } from "formik";
+import { Formik, Form, Field, FieldArray, FormikErrors } from "formik";
 import { Button } from "@nextui-org/button";
 import {
   Input,
@@ -19,6 +19,7 @@ import { useRouter } from "next/navigation";
 import { NewSchedule } from "@/util/interfaces";
 import MyTextField from "@/components/formik/useTextField";
 import { useState, ChangeEvent } from "react";
+import { ScheduleValidationSchema } from "@/util/validation";
 
 const initialValues: NewSchedule = {
   isMarked: false,
@@ -88,6 +89,7 @@ export default function NewSchedulePage() {
     <div className="p-10">
       <Formik
         initialValues={initialValues}
+        validationSchema={ScheduleValidationSchema}
         onSubmit={async (values: NewSchedule) => {
           const slug = slugify(values.title, {
             replacement: "-", // 제거된 문자 대신 '-' 사용
@@ -198,7 +200,7 @@ export default function NewSchedulePage() {
                         key={contents_title}
                         className="flex flex-col gap-4 mt-5 relative"
                       >
-                        <div className="flex justify-start gap-2">
+                        <div className="flex justify-start gap-2 items-center">
                           <MyTextField
                             name={contents_title}
                             placeholder="소제목"
@@ -235,7 +237,11 @@ export default function NewSchedulePage() {
                                           )
                                         }
                                         accept="image/*"
-                                        className="border p-2 focus:outline-none rounded-xl w-full mb-2"
+                                        className="border p-2 focus:outline-none rounded-xl w-full mb-2 file:mr-4 file:py-2 file:px-4
+      file:rounded-full file:border-0
+      file:text-sm file:font-semibold
+      file:bg-violet-50 file:text-violet-700
+      hover:file:bg-violet-100 cursor-pointer"
                                       />
                                       <div className="bg-white border rounded-xl w-full p-2 flex flex-col dark:bg-transparent">
                                         <Field
@@ -273,7 +279,6 @@ export default function NewSchedulePage() {
                                               />
                                             </PopoverContent>
                                           </Popover>
-
                                           <button
                                             type="button"
                                             onClick={() => remove(index)}
@@ -328,13 +333,14 @@ export default function NewSchedulePage() {
                         <Button
                           type="button"
                           onClick={() => remove(idx)}
-                          className="absolute right-2 bg-transparent"
+                          disabled={values.contents.length === 1 ? true : false}
+                          className="absolute right-2 bg-transparent group disabled:cursor-not-allowed"
                         >
                           <svg
                             xmlns="http://www.w3.org/2000/svg"
                             viewBox="0 0 24 24"
                             fill="currentColor"
-                            className="w-6 h-6 fill-slate-400/40 hover:fill-red-600"
+                            className="w-6 h-6 fill-slate-400/40 group-hover:fill-red-600"
                           >
                             <path
                               fillRule="evenodd"

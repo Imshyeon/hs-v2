@@ -12,10 +12,11 @@ import {
   Textarea,
 } from "@nextui-org/react";
 import { format } from "date-fns";
-import { Articles, NewArticles } from "@/util/interfaces";
+import { NewArticles } from "@/util/interfaces";
 import { ChangeEvent, useState } from "react";
 import slugify from "slugify";
 import { useRouter } from "next/navigation";
+import { ArticleValidationSchema } from "@/util/validation";
 
 type ImageState = {
   [folderName: string]: string[];
@@ -121,30 +122,45 @@ export default function NewArticlePage() {
     <div className="p-10">
       <Formik
         initialValues={initialValues}
+        validationSchema={ArticleValidationSchema}
         onSubmit={(values) => postArticleHandler(values)}
       >
         {({ values, touched, errors }) => (
           <Form className="flex flex-col">
             <section className="flex flex-col gap-4 p-4 border-b-2">
               <div className="flex gap-2 w-full">
-                <Field
-                  type="text"
-                  name="title"
-                  as={Input}
-                  isRequired
-                  placeholder="제목"
-                  size="lg"
-                  className="focus:outline-none w-2/3"
-                />
-                <Field
-                  type="text"
-                  name="category"
-                  as={Input}
-                  isRequired
-                  placeholder="카테고리"
-                  size="lg"
-                  className="focus:outline-none w-1/3"
-                />
+                <div className="flex flex-col w-2/3">
+                  <Field
+                    type="text"
+                    name="title"
+                    as={Input}
+                    isRequired
+                    placeholder="제목"
+                    size="lg"
+                    className="focus:outline-none w-full"
+                  />
+                  {touched.title && errors.title && (
+                    <span className="text-sm text-red-500 mt-1">
+                      {errors.title}
+                    </span>
+                  )}
+                </div>
+                <div className="flex flex-col w-1/3">
+                  <Field
+                    type="text"
+                    name="category"
+                    as={Input}
+                    isRequired
+                    placeholder="카테고리"
+                    size="lg"
+                    className="focus:outline-none w-full"
+                  />
+                  {touched.category && errors.category && (
+                    <span className="text-sm text-red-500 mt-1">
+                      {errors.category}
+                    </span>
+                  )}
+                </div>
               </div>
             </section>
             <FieldArray name="contents">
@@ -200,7 +216,11 @@ export default function NewArticlePage() {
                                           )
                                         }
                                         accept="image/*"
-                                        className="border p-2 focus:outline-none rounded-xl w-full mb-2"
+                                        className="border p-2 focus:outline-none rounded-xl w-full mb-2 file:mr-4 file:py-2 file:px-4
+      file:rounded-full file:border-0
+      file:text-sm file:font-semibold
+      file:bg-violet-50 file:text-violet-700
+      hover:file:bg-violet-100 cursor-pointer"
                                       />
                                       <div className="bg-white border rounded-xl w-full p-2 flex flex-col dark:bg-transparent">
                                         <Field
@@ -293,13 +313,14 @@ export default function NewArticlePage() {
                         <Button
                           type="button"
                           onClick={() => remove(idx)}
-                          className="absolute right-2 bg-transparent"
+                          disabled={values.contents.length === 1 ? true : false}
+                          className="absolute right-2 bg-transparent group disabled:cursor-not-allowed"
                         >
                           <svg
                             xmlns="http://www.w3.org/2000/svg"
                             viewBox="0 0 24 24"
                             fill="currentColor"
-                            className="w-6 h-6 fill-slate-400/40 hover:fill-red-600"
+                            className="w-6 h-6 fill-slate-400/40 group-hover:fill-red-600"
                           >
                             <path
                               fillRule="evenodd"

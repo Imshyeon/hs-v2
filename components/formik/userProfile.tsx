@@ -6,19 +6,28 @@ import Image from "next/image";
 import { UserProfileInfos } from "@/util/interfaces";
 import { ChangeEvent, useRef } from "react";
 import { profileActions } from "@/store/user";
+import { UserValidationSchema } from "@/util/validation";
+import SimpleValidationIcon from "../ui/simpleValidationIcon";
+import { useRouter } from "next/navigation";
 
-export default function UserProfileComponent() {
+export default function UserProfileComponent(userData: {
+  name: string;
+  image?: string;
+  email: string;
+  password?: string;
+  password_comfirm: string;
+}) {
   const userImageRef = useRef<HTMLInputElement>(null);
   const { image, name, email } = useSelector(
     (state: RootState) => state.profile
   );
-  console.log(image, name, email);
   const dispatch = useDispatch();
+  const router = useRouter();
 
   const initialValues: UserProfileInfos = {
-    image: image || "",
-    name: name || "홍길동",
-    email: email || "test@gmail.com",
+    image: userData.image || "",
+    name: userData.name || "홍길동",
+    email: userData.email || "example@example.com",
     password: "",
     password_confirm: "",
   };
@@ -53,23 +62,26 @@ export default function UserProfileComponent() {
   }
 
   async function changeUserInfoHandler(values: UserProfileInfos) {
-    values.image = image;
+    values.image = image || "";
     dispatch(profileActions.updateUserInfos({ ...values }));
-    const response = await fetch("/api/user", {
-      method: "POST",
+    const response = await fetch("http://localhost:3000/api/user", {
+      method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(values),
     });
+    console.log(response);
     if (!response.ok) {
       throw Error("유저 데이터를 입력하는데 실패했습니다.");
     }
     const resData = await response.json();
     console.log("resData=>", resData);
+    router.refresh();
   }
 
   return (
     <Formik
       enableReinitialize={true}
+      validationSchema={UserValidationSchema}
       initialValues={initialValues}
       onSubmit={(values) => changeUserInfoHandler(values)}
     >
@@ -114,82 +126,76 @@ export default function UserProfileComponent() {
             id="profile-user-settings"
             className="flex flex-col gap-7 p-4 w-full mr-5"
           >
-            <div className="flex gap-3 items-center">
-              <Field
-                type="text"
-                name="name"
-                id="user-name"
-                className="border rounded-md p-2 focus:outline-none w-full"
-                placeholder="이름"
-              />
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 24 24"
-                fill="currentColor"
-                className="w-6 h-6"
-              >
-                <path
-                  fillRule="evenodd"
-                  d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12Zm13.36-1.814a.75.75 0 1 0-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 0 0-1.06 1.06l2.25 2.25a.75.75 0 0 0 1.14-.094l3.75-5.25Z"
-                  clipRule="evenodd"
+            <div className="flex flex-col w-full">
+              <div className="flex gap-3 items-center">
+                <Field
+                  type="text"
+                  name="name"
+                  id="user-name"
+                  className="border rounded-md p-2 focus:outline-none w-full"
+                  placeholder="이름"
                 />
-              </svg>
+                <SimpleValidationIcon
+                  touched={touched.name}
+                  errors={errors.name}
+                />
+              </div>
+              {errors.name && (
+                <p className="text-xs text-red-500">{errors.name}</p>
+              )}
             </div>
 
-            <div className="flex gap-3 items-center">
-              <Field
-                type="email"
-                id="email"
-                name="email"
-                className="border rounded-md p-2 focus:outline-none w-full"
-                placeholder="user@example.com"
-              />
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 24 24"
-                fill="currentColor"
-                className="w-6 h-6"
-              >
-                <path
-                  fillRule="evenodd"
-                  d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12Zm13.36-1.814a.75.75 0 1 0-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 0 0-1.06 1.06l2.25 2.25a.75.75 0 0 0 1.14-.094l3.75-5.25Z"
-                  clipRule="evenodd"
+            <div className="flex flex-col w-full">
+              <div className="flex gap-3 items-center">
+                <Field
+                  type="email"
+                  id="email"
+                  name="email"
+                  className="border rounded-md p-2 focus:outline-none w-full"
+                  placeholder="user@example.com"
                 />
-              </svg>
+                <SimpleValidationIcon
+                  touched={touched.name}
+                  errors={errors.name}
+                />
+              </div>
+              {errors.email && (
+                <p className="text-xs text-red-500">{errors.email}</p>
+              )}
             </div>
 
             <div className="flex gap-3 justify-between w-full">
-              <div className="flex gap-3 items-center w-full">
-                <Field
-                  type="password"
-                  id="password"
-                  name="password"
-                  className="border rounded-md p-2 focus:outline-none w-1/2"
-                  placeholder="비밀번호 변경하기"
-                />
-                <Field
-                  type="password"
-                  id="password-confirm"
-                  name="password_confirm"
-                  className="border rounded-md p-2 focus:outline-none w-1/2"
-                  placeholder="변경된 비밀번호"
-                />
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 24 24"
-                  fill="currentColor"
-                  className="w-6 h-6"
-                >
-                  <path
-                    fillRule="evenodd"
-                    d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12Zm13.36-1.814a.75.75 0 1 0-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 0 0-1.06 1.06l2.25 2.25a.75.75 0 0 0 1.14-.094l3.75-5.25Z"
-                    clipRule="evenodd"
+              <div className="flex gap-3 items-start w-full">
+                <div className="flex flex-col w-1/2">
+                  <Field
+                    type="password"
+                    id="password"
+                    name="password"
+                    className="border rounded-md p-2 focus:outline-none w-full"
+                    placeholder="비밀번호 변경하기"
                   />
-                </svg>
+                  {touched.password && errors.password && (
+                    <p className="text-xs text-red-500">{errors.password}</p>
+                  )}
+                </div>
+                <div className="flex flex-col w-1/2">
+                  <Field
+                    type="password"
+                    id="password-confirm"
+                    name="password_confirm"
+                    className="border rounded-md p-2 focus:outline-none w-full"
+                    placeholder="변경된 비밀번호"
+                  />
+                  {touched.password_confirm && errors.password_confirm && (
+                    <p className="text-xs text-red-500">
+                      {errors.password_confirm}
+                    </p>
+                  )}
+                </div>
               </div>
               <button
                 type="submit"
-                className="p-2 w-20 bg-userProfileSaveBtn/60 rounded-xl hover:bg-userProfileSaveBtn/90"
+                className="p-2 w-20 h-fit bg-userProfileSaveBtn/60 rounded-xl hover:bg-userProfileSaveBtn/90"
               >
                 저장
               </button>
