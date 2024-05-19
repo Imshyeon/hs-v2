@@ -63,3 +63,21 @@ export const UserValidationSchema = Yup.object().shape({
     "변경한 비밀번호와 일치하지 않습니다."
   ),
 });
+
+export const SignUpSchema = Yup.object().shape({
+  name: Yup.string().required("이름을 입력해주세요."),
+  email: Yup.string()
+    .email("이메일을 올바르게 작성해주세요.")
+    .required("이메일을 입력해주세요."),
+  user_id: Yup.string()
+    .min(5, "5글자 이상으로 작성해주세요")
+    .max(12, "12글자 이하로 작성해주세요.")
+    .required("아이디를 입력해주세요. (5-12글자)"),
+  password: Yup.string()
+    .min(12, "12글자 이상으로 작성해주세요.")
+    .required("비밀번호를 작성해주세요."),
+  password_confirm: Yup.string()
+    .oneOf([Yup.ref("password")], "비밀번호와 일치하지 않습니다.")
+    .required("비밀번호를 작성해주세요."),
+  isChecked: Yup.boolean().required("약관 동의를 해주세요."),
+});

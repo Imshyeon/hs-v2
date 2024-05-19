@@ -1,5 +1,4 @@
 import { Field, useField } from "formik";
-import SimpleValidationIcon from "../ui/simpleValidationIcon";
 
 interface MyTextFieldProps {
   name: string; // name 속성을 추가

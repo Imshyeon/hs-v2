@@ -12,6 +12,7 @@ import { Schedule } from "@/util/interfaces";
 import { useQuery } from "@tanstack/react-query";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
+
 export default function Home() {
   const dispatch = useDispatch();
   const { schedule } = useSelector((state: RootState) => state.schedule);

@@ -62,6 +62,15 @@ const profileSchema = new mongoose.Schema({
   password_confirm: String,
 });
 
+const userSchema = new mongoose.Schema({
+  name: String,
+  email: String,
+  user_id: String,
+  password: String,
+  password_confirm: String,
+  isChecked: Boolean,
+});
+
 export const ScheduleModel =
   mongoose.models?.ScheduleModel ||
   mongoose.model("ScheduleModel", scheduleSchema);
@@ -71,6 +80,8 @@ export const ArticleModel =
 export const ProfileModel =
   mongoose.models?.ProfileModel ||
   mongoose.model("ProfileModel", profileSchema);
+export const UserModel =
+  mongoose.models?.UserModel || mongoose.model("UserModel", userSchema);
 
 export async function connectDB() {
   try {
