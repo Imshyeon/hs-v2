@@ -50,18 +50,16 @@ export const ArticleValidationSchema = Yup.object().shape({
 
 export const UserValidationSchema = Yup.object().shape({
   image: Yup.string(),
-  name: Yup.string()
-    .min(1, "1글자 이상으로 작성해주세요.")
-    .max(15, "15글자 이하로 작성해주세요")
-    .required("이름을 작성해주세요. (1-15글자)"),
+  name: Yup.string().required("이름을 입력해주세요."),
   email: Yup.string()
     .email("이메일을 올바르게 작성해주세요.")
     .required("이메일을 작성해주세요."),
-  password: Yup.string(),
-  password_confirm: Yup.string().oneOf(
-    [Yup.ref("password")],
-    "변경한 비밀번호와 일치하지 않습니다."
-  ),
+  password: Yup.string()
+    .min(12, "12글자 이상으로 작성해주세요.")
+    .required("비밀번호를 작성해주세요."),
+  password_confirm: Yup.string()
+    .oneOf([Yup.ref("password")], "변경한 비밀번호와 일치하지 않습니다.")
+    .required("비밀번호를 작성해주세요."),
 });
 
 export const SignUpSchema = Yup.object().shape({

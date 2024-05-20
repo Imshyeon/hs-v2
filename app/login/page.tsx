@@ -8,6 +8,7 @@ import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useDispatch } from "react-redux";
 import { alertActions } from "@/store/alert";
+import { useState } from "react";
 
 interface LoginValues {
   user_id: string;
@@ -22,6 +23,7 @@ const initialValues: LoginValues = {
 export default function LoginPage() {
   const router = useRouter();
   const dispatch = useDispatch();
+
   return (
     <div className="flex flex-col gap-4">
       <h1 className="p-4 text-center font-extrabold text-4xl h-fit">로그인</h1>
@@ -62,13 +64,15 @@ export default function LoginPage() {
                 label="아이디"
                 placeholder="아이디를 입력하세요."
               />
-              <UserInput
-                id="password"
-                name="password"
-                label="비밀번호"
-                placeholder="비밀번호를 입력하세요."
-                type="password"
-              />
+              <div className="w-2/3">
+                <UserInput
+                  id="password"
+                  name="password"
+                  label="비밀번호"
+                  placeholder="비밀번호를 입력하세요."
+                  type="password"
+                />
+              </div>
             </div>
             <div className="justify-center mt-5">
               <Button

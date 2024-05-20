@@ -4,11 +4,14 @@ import { Field, Formik, Form } from "formik";
 import { useSelector, useDispatch } from "react-redux";
 import Image from "next/image";
 import { UserProfileInfos } from "@/util/interfaces";
-import { ChangeEvent, useRef } from "react";
+import { ChangeEvent, useRef, useState } from "react";
 import { profileActions } from "@/store/user";
 import { UserValidationSchema } from "@/util/validation";
 import SimpleValidationIcon from "../ui/simpleValidationIcon";
 import { useRouter } from "next/navigation";
+import { EyeSlashFilledIcon } from "../ui/icon/EyeSlashIcon";
+import { EyeFilledIcon } from "../ui/icon/EyeFilledIcon";
+import { Input } from "@nextui-org/react";
 
 export default function UserProfileComponent(userData: {
   name: string;
@@ -18,11 +21,11 @@ export default function UserProfileComponent(userData: {
   password_comfirm: string;
 }) {
   const userImageRef = useRef<HTMLInputElement>(null);
-  const { image, name, email } = useSelector(
-    (state: RootState) => state.profile
-  );
+  const { image } = useSelector((state: RootState) => state.profile);
   const dispatch = useDispatch();
   const router = useRouter();
+  const [isVisiblePW, setIsVisiblePW] = useState(false);
+  const [isVisiblePWConfirm, setIsVisiblePWConfirm] = useState(false);
 
   const initialValues: UserProfileInfos = {
     image: userData.image || "",
@@ -131,8 +134,8 @@ export default function UserProfileComponent(userData: {
                 <Field
                   type="text"
                   name="name"
+                  as={Input}
                   id="user-name"
-                  className="border rounded-md p-2 focus:outline-none w-full"
                   placeholder="이름"
                 />
                 <SimpleValidationIcon
@@ -151,7 +154,7 @@ export default function UserProfileComponent(userData: {
                   type="email"
                   id="email"
                   name="email"
-                  className="border rounded-md p-2 focus:outline-none w-full"
+                  as={Input}
                   placeholder="user@example.com"
                 />
                 <SimpleValidationIcon
@@ -168,11 +171,24 @@ export default function UserProfileComponent(userData: {
               <div className="flex gap-3 items-start w-full">
                 <div className="flex flex-col w-1/2">
                   <Field
-                    type="password"
+                    type={isVisiblePW ? "text" : "password"}
+                    as={Input}
                     id="password"
                     name="password"
-                    className="border rounded-md p-2 focus:outline-none w-full"
                     placeholder="비밀번호 변경하기"
+                    endContent={
+                      <button
+                        className="focus:outline-none"
+                        type="button"
+                        onClick={() => setIsVisiblePW(!isVisiblePW)}
+                      >
+                        {isVisiblePW ? (
+                          <EyeSlashFilledIcon className="text-2xl text-default-400 pointer-events-none" />
+                        ) : (
+                          <EyeFilledIcon className="text-2xl text-default-400 pointer-events-none" />
+                        )}
+                      </button>
+                    }
                   />
                   {touched.password && errors.password && (
                     <p className="text-xs text-red-500">{errors.password}</p>
@@ -180,11 +196,26 @@ export default function UserProfileComponent(userData: {
                 </div>
                 <div className="flex flex-col w-1/2">
                   <Field
-                    type="password"
+                    type={isVisiblePWConfirm ? "text" : "password"}
+                    as={Input}
                     id="password-confirm"
                     name="password_confirm"
-                    className="border rounded-md p-2 focus:outline-none w-full"
                     placeholder="변경된 비밀번호"
+                    endContent={
+                      <button
+                        className="focus:outline-none"
+                        type="button"
+                        onClick={() =>
+                          setIsVisiblePWConfirm(!isVisiblePWConfirm)
+                        }
+                      >
+                        {isVisiblePWConfirm ? (
+                          <EyeSlashFilledIcon className="text-2xl text-default-400 pointer-events-none" />
+                        ) : (
+                          <EyeFilledIcon className="text-2xl text-default-400 pointer-events-none" />
+                        )}
+                      </button>
+                    }
                   />
                   {touched.password_confirm && errors.password_confirm && (
                     <p className="text-xs text-red-500">

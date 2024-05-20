@@ -20,7 +20,7 @@ export default function UserInput({ ...props }: UserInputProps) {
 
   return (
     <div className="flex flex-col gap-1 w-full items-center">
-      {props.rows ? (
+      {props.type === "password" ? (
         <>
           <label htmlFor={props.id} className="w-full text-left relative">
             {props.label}
