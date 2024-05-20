@@ -4,8 +4,13 @@ import Link from "next/link";
 import { Button } from "@nextui-org/button";
 import { Schedule } from "@/util/interfaces";
 import { useQuery } from "@tanstack/react-query";
+import { useSession } from "next-auth/react";
 
 export default function Sidebar() {
+  const { data: session, status } = useSession();
+  console.log("session=>", session);
+  console.log("status=>", status);
+
   const { data } = useQuery({
     queryKey: ["schedules"],
     queryFn: getAllSchedulesData,
@@ -48,7 +53,11 @@ export default function Sidebar() {
 
       <ul className="absolute inset-x-0 bottom-1 flex flex-col space-y-1">
         <Button className="bg-layout-sidebar hover:bg-white p-2 dark:hover:text-black">
-          <Link href={"/login"}>로그인/로그아웃</Link>
+          {status === "authenticated" ? (
+            <Link href={"/logout"}>로그아웃</Link>
+          ) : (
+            <Link href={"/login"}>로그인</Link>
+          )}
         </Button>
         <Button className="bg-layout-sidebar hover:bg-white p-2 dark:hover:text-black">
           <Link href={"/signup"} className="hover:bg-white p-2 ">
