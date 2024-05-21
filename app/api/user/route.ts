@@ -4,6 +4,8 @@ const s3 = new S3({
 });
 import { connectDB, ProfileModel } from "@/util/db-util";
 import { NextResponse } from "next/server";
+import { getServerSession } from "next-auth";
+import { authOptions } from "../auth/[...nextauth]/route";
 
 // user profile
 export async function PUT(req: Request, res: Response) {
@@ -22,6 +24,13 @@ export async function PUT(req: Request, res: Response) {
 
 export async function GET(req: Request, res: Response) {
   try {
+    const session = await getServerSession(authOptions);
+    if (!session) {
+      return NextResponse.json(
+        { error: "로그인이 필요합니다." },
+        { status: 401 }
+      );
+    }
     await connectDB();
     const userProfile = await ProfileModel.find({});
     console.log(userProfile);

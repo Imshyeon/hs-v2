@@ -7,11 +7,14 @@ import { Schedule } from "@/util/interfaces";
 import { useQuery } from "@tanstack/react-query";
 import { alertActions } from "@/store/alert";
 import { scheduleActions } from "@/store/schedules";
+import { useRouter } from "next/navigation";
+import LoginPage from "@/app/login/page";
 
 export default function AllSchedulesComponent() {
   const [order, setOrder] = useState("oldest");
   const [sortedSchedules, setSortedSchedules] = useState<Schedule[]>([]);
   const dispatch = useDispatch();
+  const router = useRouter();
 
   const { data, isError, error, isPending } = useQuery({
     queryKey: ["schedules"],
@@ -35,23 +38,7 @@ export default function AllSchedulesComponent() {
         })
       );
       dispatch(scheduleActions.setAllSchedules(data));
-    }
-    if (isError) {
-      dispatch(
-        alertActions.setAlertState({
-          status: "failure",
-          message: "스케줄 데이터를 불러오는데 실패했습니다.",
-        })
-      );
-    }
-  }, [isError, isPending, error, data, dispatch]);
 
-  const markedSchedules = data?.allSchedules.filter(
-    (schedule) => schedule.isMarked
-  );
-
-  useEffect(() => {
-    if (data) {
       const sorted = [...data.allSchedules].sort((a, b) => {
         const dateA = new Date(a.created_date);
         const dateB = new Date(b.created_date);
@@ -63,7 +50,38 @@ export default function AllSchedulesComponent() {
       });
       setSortedSchedules(sorted);
     }
-  }, [data, order]);
+  }, [isPending, order, data, dispatch]);
+
+  if (isError) {
+    dispatch(
+      alertActions.setAlertState({
+        status: "failure",
+        message: error.message || "스케줄 데이터를 불러오는데 실패했습니다.",
+      })
+    );
+
+    router.replace("/login");
+    return;
+  }
+
+  const markedSchedules = data?.allSchedules.filter(
+    (schedule) => schedule.isMarked
+  );
+
+  // useEffect(() => {
+  //   if (data) {
+  //     const sorted = [...data.allSchedules].sort((a, b) => {
+  //       const dateA = new Date(a.created_date);
+  //       const dateB = new Date(b.created_date);
+  //       if (order === "oldest") {
+  //         return dateA.valueOf() - dateB.valueOf();
+  //       } else {
+  //         return dateB.valueOf() - dateA.valueOf();
+  //       }
+  //     });
+  //     setSortedSchedules(sorted);
+  //   }
+  // }, [data, order]);
 
   return (
     <div className="p-4 mt-2 flex flex-col gap-5">

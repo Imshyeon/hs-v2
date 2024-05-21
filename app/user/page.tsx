@@ -1,8 +1,7 @@
 "use client";
 import CardList from "@/components/ui/card-list";
 import Link from "next/link";
-import { useSelector, useDispatch } from "react-redux";
-import { RootState } from "@/store/index";
+import { useDispatch } from "react-redux";
 import { useEffect } from "react";
 import { profileActions } from "@/store/user";
 import UserProfileComponent from "@/components/formik/userProfile";
@@ -10,17 +9,18 @@ import { useQuery } from "@tanstack/react-query";
 import { alertActions } from "@/store/alert";
 import UserProfileLoading from "@/components/detail-page/loading/user-profile-loading";
 import { Schedule } from "@/util/interfaces";
+import { redirect, useRouter } from "next/navigation";
 
 // 유저 프로필 페이지
 export default function UserProfilePage() {
   const dispatch = useDispatch();
+  const router = useRouter();
 
   const { data, isError, error, isPending } = useQuery({
     queryKey: ["user"],
     queryFn: getUserInfos,
   });
 
-  console.log("data=>", data);
   const { data: scheduleData } = useQuery({
     queryKey: ["schedules"],
     queryFn: getAllSchedulesData,
@@ -44,18 +44,22 @@ export default function UserProfilePage() {
         })
       );
     }
-    if (isError) {
-      dispatch(
-        alertActions.setAlertState({
-          status: "failure",
-          message: error.message || "유저 데이터를 가져오는데 실패했습니다.",
-        })
-      );
-    }
-  }, [data, isError, error, isPending, dispatch]);
+  }, [data, isPending, dispatch]);
 
   if (isPending) {
     return <UserProfileLoading />;
+  }
+
+  if (isError) {
+    console.log(error);
+    dispatch(
+      alertActions.setAlertState({
+        status: "failure",
+        message: error.message || "유저 데이터를 가져오는데 실패했습니다.",
+      })
+    );
+    router.replace("/login");
+    return;
   }
 
   const markedSchedules = scheduleData?.allSchedules.filter(
@@ -108,8 +112,12 @@ export default function UserProfilePage() {
 
 export async function getUserInfos() {
   const response = await fetch("/api/user");
-  const userProfile = await response.json();
-  return userProfile.at(-1);
+  const resData = await response.json();
+  if (response.status === 401) {
+    console.log(resData.error);
+    throw Error(resData.error);
+  }
+  return resData.at(-1);
 }
 
 export async function getAllSchedulesData() {

@@ -54,7 +54,7 @@ export default function Sidebar() {
       <ul className="absolute inset-x-0 bottom-1 flex flex-col space-y-1">
         <Button className="bg-layout-sidebar hover:bg-white p-2 dark:hover:text-black">
           {status === "authenticated" ? (
-            <button onClick={() => signOut()}>로그아웃</button>
+            <span onClick={() => signOut()}>로그아웃</span>
           ) : (
             <Link href={"/login"}>로그인</Link>
           )}
