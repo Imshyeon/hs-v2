@@ -57,11 +57,13 @@ export default function Sidebar() {
             <Link href={"/login"}>로그인</Link>
           )}
         </Button>
-        <Button className="bg-layout-sidebar hover:bg-white p-2 dark:hover:text-black">
-          <Link href={"/signup"} className="hover:bg-white p-2 ">
-            회원가입
-          </Link>
-        </Button>
+        {status === "unauthenticated" && (
+          <Button className="bg-layout-sidebar hover:bg-white p-2 dark:hover:text-black">
+            <Link href={"/signup"} className="hover:bg-white p-2 ">
+              회원가입
+            </Link>
+          </Button>
+        )}
       </ul>
     </nav>
   );
