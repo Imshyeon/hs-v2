@@ -8,11 +8,20 @@ declare module "next-auth" {
   interface Session {
     user: {
       user_id: string;
+      role: string;
     } & DefaultSession["user"];
   }
 
   interface User {
     user_id: string;
+    role: string;
+  }
+}
+
+declare module "next-auth/jwt" {
+  interface JWT {
+    user_id: string;
+    role: string;
   }
 }
 
@@ -59,6 +68,7 @@ const handler = NextAuth({
               name: user.name,
               email: user.email,
               image: user.image,
+              role: user.role,
             } as any) || null
           );
         } catch (error: any) {
@@ -67,6 +77,22 @@ const handler = NextAuth({
       },
     }),
   ],
+  callbacks: {
+    async session({ session, token, user }) {
+      if (token) {
+        session.user.user_id = token.user_id;
+        session.user.role = token.role;
+      }
+      return session;
+    },
+    async jwt({ token, user }) {
+      if (user) {
+        token.user_id = user.user_id;
+        token.role = user.role;
+      }
+      return token;
+    },
+  },
   pages: {
     signIn: "/login",
   },

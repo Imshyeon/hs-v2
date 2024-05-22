@@ -1,6 +1,4 @@
-"use client";
-
-import { Formik, Form, Field, FieldArray } from "formik";
+import { Formik, Form, Field, FieldArray, FormikErrors } from "formik";
 import { Button } from "@nextui-org/button";
 import {
   Input,
@@ -12,27 +10,10 @@ import {
 } from "@nextui-org/react";
 import { parseDate } from "@internationalized/date";
 import { format } from "date-fns";
-import slugify from "slugify";
-import { useRouter } from "next/navigation";
-import { NewSchedule, Schedule } from "@/util/interfaces";
+import { NewSchedule } from "@/util/interfaces";
 import MyTextField from "@/components/formik/useTextField";
-import { useEffect, useState } from "react";
 import { ScheduleValidationSchema } from "@/util/validation";
-
-export async function getCurrentScheduleData(slug: string) {
-  try {
-    const response = await fetch(`http://localhost:3000/api/schedules/${slug}`);
-    if (!response.ok) {
-      throw Error(
-        "해당 스케줄 데이터를 가져오는데 실패했습니다. 다시 시도해주세요."
-      );
-    }
-    const scheduleData: Schedule = await response.json();
-    return scheduleData;
-  } catch (err: any) {
-    throw Error(err);
-  }
-}
+import { ChangeEvent } from "react";
 
 const initialValues: NewSchedule = {
   isMarked: false,
@@ -57,87 +38,19 @@ const initialValues: NewSchedule = {
   hashtags: "",
 };
 
-export default function NewSchedulePage({
-  params,
+export default function NewScheduleForm({
+  handleSubmit,
+  handleFileUpload,
 }: {
-  params: { slug: string };
+  handleSubmit: (values: NewSchedule) => void;
+  handleFileUpload: (e: ChangeEvent<HTMLInputElement>, title: string) => void;
 }) {
-  const router = useRouter();
-  const [imageURL, setImageURL] = useState<string[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [scheduleData, setScheduleData] = useState<Schedule | NewSchedule>(
-    initialValues
-  );
-  const scheduleSlug = decodeURIComponent(params.slug);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      const data = await getCurrentScheduleData(scheduleSlug);
-      setScheduleData(data);
-      setLoading(false);
-    };
-    fetchData();
-  }, [scheduleSlug]);
-
-  async function handleFileUpload(event: any, upper: number, current: number) {
-    event.preventDefault();
-    const file = event.target.files[0];
-    const fileName = file.name;
-    const formData = new FormData();
-    formData.append("file", file);
-
-    try {
-      const response = await fetch("http://localhost:3000/api/new/schedules", {
-        method: "POST",
-        body: formData,
-      });
-      if (!response.ok) {
-        console.log({ message: "이미지 업로드 실패" });
-      }
-
-      setImageURL((prevImages) => {
-        return [
-          `https://zoekangdev-project-holiday-schedules-v2.s3.ap-northeast-2.amazonaws.com/${fileName}`,
-          ...prevImages,
-        ];
-      });
-    } catch (err) {
-      console.log({ message: "이미지 업로드 실패" });
-    }
-  }
-
-  return !loading ? (
+  return (
     <div className="p-10">
       <Formik
-        initialValues={scheduleData}
+        initialValues={initialValues}
         validationSchema={ScheduleValidationSchema}
-        onSubmit={async (values: NewSchedule) => {
-          const slug = slugify(values.title, {
-            replacement: "-", // 제거된 문자 대신 '-' 사용
-            remove: /[*+~.()'"!:@]/g,
-            locale: "ko",
-            trim: true,
-          });
-
-          values.contents.map((content, index) => {
-            content.content.map((c) => {
-              c.image = imageURL[index];
-            });
-          });
-
-          try {
-            const response = (await fetch(`/api/schedules/${scheduleSlug}`, {
-              method: "PUT",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({ ...values, slug: scheduleSlug }),
-            })) as RequestInit;
-            console.log(response);
-            router.push(`/user/schedules/${slug}`);
-          } catch (err: any) {
-            console.log(err);
-            throw Error("새로운 스케줄을 생성하는데 실패했습니다.", err);
-          }
-        }}
+        onSubmit={(values: NewSchedule) => handleSubmit(values)}
       >
         {({ values, touched, errors, setFieldValue, setFieldTouched }) => (
           <Form className="flex flex-col">
@@ -221,7 +134,7 @@ export default function NewSchedulePage({
                         key={contents_title}
                         className="flex flex-col gap-4 mt-5 relative"
                       >
-                        <div className="flex justify-start gap-2">
+                        <div className="flex justify-start gap-2 items-center">
                           <MyTextField
                             name={contents_title}
                             placeholder="소제목"
@@ -242,9 +155,9 @@ export default function NewSchedulePage({
                             {({ push, remove }) => (
                               <>
                                 {content.content.map((value, index) => {
+                                  const folderName = `contents[${idx}].content_title`;
                                   const content_detail = `contents[${idx}].content[${index}].detail`;
                                   const reference = `contents[${idx}].content[${index}].reference`;
-                                  const content_image = `contents[${idx}].content[${index}].image`;
                                   return (
                                     <div key={content_detail}>
                                       <input
@@ -252,7 +165,10 @@ export default function NewSchedulePage({
                                         type="file"
                                         name={`contents[${idx}].content[${index}].image`}
                                         onChange={(e) =>
-                                          handleFileUpload(e, idx, index)
+                                          handleFileUpload(
+                                            e,
+                                            content.content_title
+                                          )
                                         }
                                         accept="image/*"
                                         className="border p-2 focus:outline-none rounded-xl w-full mb-2 file:mr-4 file:py-2 file:px-4
@@ -269,7 +185,7 @@ export default function NewSchedulePage({
                                           placeholder="상세 스케줄 입력"
                                           rows="3"
                                           variant="underlined"
-                                          className="focus:outline-none w-full resize-none bg-transparent p-2 "
+                                          className="focus:outline-none w-full resize-none bg-transparent p-2"
                                         />
                                         <div className="flex gap-2 items-center">
                                           <Popover placement="top" showArrow>
@@ -297,7 +213,6 @@ export default function NewSchedulePage({
                                               />
                                             </PopoverContent>
                                           </Popover>
-
                                           <button
                                             type="button"
                                             onClick={() => remove(index)}
@@ -441,7 +356,5 @@ export default function NewSchedulePage({
         )}
       </Formik>
     </div>
-  ) : (
-    <p>Loading...</p>
   );
 }

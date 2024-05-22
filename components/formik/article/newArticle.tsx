@@ -1,5 +1,3 @@
-"use client";
-
 import { Formik, Form, Field, FieldArray } from "formik";
 import { Button } from "@nextui-org/button";
 import {
@@ -7,40 +5,18 @@ import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-  DateRangePicker,
   Textarea,
 } from "@nextui-org/react";
-import { parseDate } from "@internationalized/date";
 import { format } from "date-fns";
-import slugify from "slugify";
-import { useRouter } from "next/navigation";
-import { NewSchedule, Schedule } from "@/util/interfaces";
-import MyTextField from "@/components/formik/useTextField";
-import { useEffect, useState } from "react";
-import { ScheduleValidationSchema } from "@/util/validation";
+import { NewArticles } from "@/util/interfaces";
+import { ArticleValidationSchema } from "@/util/validation";
+import { ChangeEvent } from "react";
 
-export async function getCurrentScheduleData(slug: string) {
-  try {
-    const response = await fetch(`http://localhost:3000/api/schedules/${slug}`);
-    if (!response.ok) {
-      throw Error(
-        "해당 스케줄 데이터를 가져오는데 실패했습니다. 다시 시도해주세요."
-      );
-    }
-    const scheduleData: Schedule = await response.json();
-    return scheduleData;
-  } catch (err: any) {
-    throw Error(err);
-  }
-}
-
-const initialValues: NewSchedule = {
-  isMarked: false,
+const initialValues: NewArticles = {
   title: "",
   category: "",
-  place: "",
-  date: {},
-  created_date: new Date().toLocaleDateString(),
+  date: format(new Date(), "yyyy-MM-dd"),
+  slug: "",
   contents: [
     {
       content_title: "",
@@ -57,155 +33,59 @@ const initialValues: NewSchedule = {
   hashtags: "",
 };
 
-export default function NewSchedulePage({
-  params,
+export default function NewArticleForm({
+  postArticleHandler,
+  handleFileUpload,
 }: {
-  params: { slug: string };
+  postArticleHandler: (values: NewArticles) => void;
+  handleFileUpload: (
+    e: ChangeEvent<HTMLInputElement>,
+    title: string,
+    content_title: string
+  ) => void;
 }) {
-  const router = useRouter();
-  const [imageURL, setImageURL] = useState<string[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [scheduleData, setScheduleData] = useState<Schedule | NewSchedule>(
-    initialValues
-  );
-  const scheduleSlug = decodeURIComponent(params.slug);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      const data = await getCurrentScheduleData(scheduleSlug);
-      setScheduleData(data);
-      setLoading(false);
-    };
-    fetchData();
-  }, [scheduleSlug]);
-
-  async function handleFileUpload(event: any, upper: number, current: number) {
-    event.preventDefault();
-    const file = event.target.files[0];
-    const fileName = file.name;
-    const formData = new FormData();
-    formData.append("file", file);
-
-    try {
-      const response = await fetch("http://localhost:3000/api/new/schedules", {
-        method: "POST",
-        body: formData,
-      });
-      if (!response.ok) {
-        console.log({ message: "이미지 업로드 실패" });
-      }
-
-      setImageURL((prevImages) => {
-        return [
-          `https://zoekangdev-project-holiday-schedules-v2.s3.ap-northeast-2.amazonaws.com/${fileName}`,
-          ...prevImages,
-        ];
-      });
-    } catch (err) {
-      console.log({ message: "이미지 업로드 실패" });
-    }
-  }
-
-  return !loading ? (
+  return (
     <div className="p-10">
       <Formik
-        initialValues={scheduleData}
-        validationSchema={ScheduleValidationSchema}
-        onSubmit={async (values: NewSchedule) => {
-          const slug = slugify(values.title, {
-            replacement: "-", // 제거된 문자 대신 '-' 사용
-            remove: /[*+~.()'"!:@]/g,
-            locale: "ko",
-            trim: true,
-          });
-
-          values.contents.map((content, index) => {
-            content.content.map((c) => {
-              c.image = imageURL[index];
-            });
-          });
-
-          try {
-            const response = (await fetch(`/api/schedules/${scheduleSlug}`, {
-              method: "PUT",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({ ...values, slug: scheduleSlug }),
-            })) as RequestInit;
-            console.log(response);
-            router.push(`/user/schedules/${slug}`);
-          } catch (err: any) {
-            console.log(err);
-            throw Error("새로운 스케줄을 생성하는데 실패했습니다.", err);
-          }
-        }}
+        initialValues={initialValues}
+        validationSchema={ArticleValidationSchema}
+        onSubmit={(values) => postArticleHandler(values)}
       >
-        {({ values, touched, errors, setFieldValue, setFieldTouched }) => (
+        {({ values, touched, errors }) => (
           <Form className="flex flex-col">
             <section className="flex flex-col gap-4 p-4 border-b-2">
               <div className="flex gap-2 w-full">
-                <MyTextField
-                  size="lg"
-                  name="title"
-                  placeholder="제목"
-                  className="focus:outline-none w-2/3"
-                  as={Input}
-                />
-                <MyTextField
-                  size="lg"
-                  name="category"
-                  placeholder="카테고리"
-                  className="focus:outline-none w-1/3"
-                  as={Input}
-                />
-              </div>
-              <div className="flex gap-2 w-full">
-                <MyTextField
-                  size="lg"
-                  name="place"
-                  placeholder="장소"
-                  className="focus:outline-none w-1/2"
-                  as={Input}
-                />
-                <div className="flex gap-1 w-1/2">
+                <div className="flex flex-col w-2/3">
                   <Field
-                    as={DateRangePicker}
+                    type="text"
+                    name="title"
+                    as={Input}
                     isRequired
-                    selectionType="date"
-                    size="sm"
-                    radius="md"
-                    label="여행 기간"
-                    name={values.date}
+                    placeholder="제목"
+                    size="lg"
                     className="focus:outline-none w-full"
-                    onChange={(e: {
-                      start: { year: number; month: number; day: number };
-                      end: { year: number; month: number; day: number };
-                    }) => {
-                      const { start, end } = e;
-                      const startDate = new Date(
-                        start.year,
-                        start.month - 1,
-                        start.day
-                      );
-                      const endDate = new Date(
-                        end.year,
-                        end.month - 1,
-                        end.day
-                      );
-
-                      const formattedStartDate = format(
-                        startDate,
-                        "yyyy-MM-dd"
-                      );
-                      const formattedEndDate = format(endDate, "yyyy-MM-dd");
-
-                      setFieldValue("date", {
-                        start: parseDate(formattedStartDate),
-                        end: parseDate(formattedEndDate),
-                      });
-
-                      console.log(values.date);
-                    }}
                   />
+                  {touched.title && errors.title && (
+                    <span className="text-sm text-red-500 mt-1">
+                      {errors.title}
+                    </span>
+                  )}
+                </div>
+                <div className="flex flex-col w-1/3">
+                  <Field
+                    type="text"
+                    name="category"
+                    as={Input}
+                    isRequired
+                    placeholder="카테고리"
+                    size="lg"
+                    className="focus:outline-none w-full"
+                  />
+                  {touched.category && errors.category && (
+                    <span className="text-sm text-red-500 mt-1">
+                      {errors.category}
+                    </span>
+                  )}
                 </div>
               </div>
             </section>
@@ -222,37 +102,44 @@ export default function NewSchedulePage({
                         className="flex flex-col gap-4 mt-5 relative"
                       >
                         <div className="flex justify-start gap-2">
-                          <MyTextField
+                          <Field
+                            type="text"
+                            as={Input}
+                            isRequired
                             name={contents_title}
                             placeholder="소제목"
                             className="focus:outline-none w-1/2"
-                            as={Input}
-                            size="default"
                           />
-                          <MyTextField
-                            name={content_place}
-                            placeholder="여행 장소"
-                            className="focus:outline-none w-fit"
+                          <Field
+                            type="text"
                             as={Input}
-                            size="default"
+                            name={content_place}
+                            variant="underlined"
+                            placeholder="장소"
+                            className="focus:outline-none w-fit"
                           />
                         </div>
+
                         <div className="flex flex-col bg-scheduleContentBox p-4 rounded-xl gap-4 dark:bg-zinc-800">
                           <FieldArray name={`contents.${idx}.content`}>
                             {({ push, remove }) => (
                               <>
                                 {content.content.map((value, index) => {
+                                  const folderName = `contents[${idx}].content_title`;
                                   const content_detail = `contents[${idx}].content[${index}].detail`;
                                   const reference = `contents[${idx}].content[${index}].reference`;
-                                  const content_image = `contents[${idx}].content[${index}].image`;
                                   return (
-                                    <div key={content_detail}>
+                                    <div key={content_detail.slice(5)}>
                                       <input
                                         id="file"
                                         type="file"
                                         name={`contents[${idx}].content[${index}].image`}
                                         onChange={(e) =>
-                                          handleFileUpload(e, idx, index)
+                                          handleFileUpload(
+                                            e,
+                                            values.title,
+                                            content.content_title
+                                          )
                                         }
                                         accept="image/*"
                                         className="border p-2 focus:outline-none rounded-xl w-full mb-2 file:mr-4 file:py-2 file:px-4
@@ -266,10 +153,10 @@ export default function NewSchedulePage({
                                           as={Textarea}
                                           name={content_detail}
                                           isRequired
-                                          placeholder="상세 스케줄 입력"
+                                          placeholder="상세 내용 입력"
                                           rows="3"
                                           variant="underlined"
-                                          className="focus:outline-none w-full resize-none bg-transparent p-2 "
+                                          className="focus:outline-none w-full resize-none bg-transparent p-2"
                                         />
                                         <div className="flex gap-2 items-center">
                                           <Popover placement="top" showArrow>
@@ -375,10 +262,12 @@ export default function NewSchedulePage({
                     type="button"
                     onClick={() =>
                       push({
+                        id: Math.random(),
                         content_title: "",
                         content_place: "",
                         content: [
                           {
+                            content_id: Math.random(),
                             detail: "",
                             image: null,
                             reference: "",
@@ -441,7 +330,5 @@ export default function NewSchedulePage({
         )}
       </Formik>
     </div>
-  ) : (
-    <p>Loading...</p>
   );
 }

@@ -72,12 +72,11 @@ export default function UserProfileComponent(userData: {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(values),
     });
-    console.log(response);
+
     if (!response.ok) {
       throw Error("유저 데이터를 입력하는데 실패했습니다.");
     }
     const resData = await response.json();
-    console.log("resData=>", resData);
     router.refresh();
   }
 

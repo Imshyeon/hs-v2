@@ -13,6 +13,7 @@ const scheduleSchema = new mongoose.Schema({
   place: String,
   date: Object,
   created_date: String,
+  createdBy: { type: mongoose.Schema.Types.ObjectId, ref: "UserModel" },
   contents: [
     {
       id: Number,
@@ -36,6 +37,7 @@ const articleSchema = new mongoose.Schema({
   slug: String,
   category: String,
   date: String,
+  createdBy: { type: mongoose.Schema.Types.ObjectId, ref: "UserModel" },
   contents: [
     {
       id: Number,
@@ -70,6 +72,9 @@ const userSchema = new mongoose.Schema({
   password: String,
   password_confirm: String,
   isChecked: Boolean,
+  role: { type: String, enum: ["admin", "user"], default: "user" },
+  schedules: [{ type: mongoose.Schema.Types.ObjectId, ref: "ScheduleModel" }],
+  articles: [{ type: mongoose.Schema.Types.ObjectId, ref: "ArticleModel" }],
 });
 
 export const ScheduleModel =
@@ -87,19 +92,6 @@ export const UserModel =
 export async function connectDB() {
   try {
     await mongoose.connect("mongodb://127.0.0.1:27017/holiday_schedule");
-    const profileCount = await ProfileModel.countDocuments();
-    if (profileCount === 0) {
-      console.log("Initializing profile model...");
-      const initialProfile = new ProfileModel({
-        name: "홍길동",
-        email: "example@example.com",
-        image: "",
-        password: "",
-        password_confirm: "",
-      });
-      await initialProfile.save();
-      console.log("Profile model initialized.", initialProfile);
-    }
   } catch (err) {
     throw Error("데이터베이스 연결 실패");
   }

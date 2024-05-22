@@ -26,8 +26,8 @@ export async function getDetailSchedule(slug: string) {
         "해당 스케줄 데이터를 가져오는데 실패했습니다. 다시 시도해주세요."
       );
     }
-    const scheduleData: Schedule[] = await response.json();
-    return scheduleData[0];
+    const scheduleData: Schedule = await response.json();
+    return scheduleData;
   } catch (err: any) {
     throw Error(err);
   }
@@ -76,6 +76,8 @@ const ScheduleDetailPage: NextPage<MyPageProps> = ({ params }) => {
   if (isPending) {
     return <DetailPageLoading />;
   }
+
+  console.log(data);
 
   // const [scheduleData, setScheduleData] = useState<Schedule | null>(null);
 
@@ -154,6 +156,7 @@ const ScheduleDetailPage: NextPage<MyPageProps> = ({ params }) => {
             });
 
             router.push("/user/schedules");
+            return;
           }}
         />
       )}

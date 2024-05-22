@@ -8,7 +8,8 @@ import { useQuery } from "@tanstack/react-query";
 import { alertActions } from "@/store/alert";
 import { scheduleActions } from "@/store/schedules";
 import { useRouter } from "next/navigation";
-import LoginPage from "@/app/login/page";
+import Tutorial from "@/app/tutorial/page";
+import TutorialComponent from "./tutorial";
 
 export default function AllSchedulesComponent() {
   const [order, setOrder] = useState("oldest");
@@ -31,24 +32,26 @@ export default function AllSchedulesComponent() {
       );
     }
     if (data) {
-      dispatch(
-        alertActions.setAlertState({
-          status: "success",
-          message: "스케줄 데이터를 불러오는데 성공했습니다.",
-        })
-      );
-      dispatch(scheduleActions.setAllSchedules(data));
+      if (data.allSchedules.length >= 1) {
+        dispatch(
+          alertActions.setAlertState({
+            status: "success",
+            message: "스케줄 데이터를 불러오는데 성공했습니다.",
+          })
+        );
+        dispatch(scheduleActions.setAllSchedules(data));
 
-      const sorted = [...data.allSchedules].sort((a, b) => {
-        const dateA = new Date(a.created_date);
-        const dateB = new Date(b.created_date);
-        if (order === "oldest") {
-          return dateA.valueOf() - dateB.valueOf();
-        } else {
-          return dateB.valueOf() - dateA.valueOf();
-        }
-      });
-      setSortedSchedules(sorted);
+        const sorted = [...data.allSchedules].sort((a, b) => {
+          const dateA = new Date(a.created_date);
+          const dateB = new Date(b.created_date);
+          if (order === "oldest") {
+            return dateA.valueOf() - dateB.valueOf();
+          } else {
+            return dateB.valueOf() - dateA.valueOf();
+          }
+        });
+        setSortedSchedules(sorted);
+      }
     }
   }, [isPending, order, data, dispatch]);
 
@@ -62,6 +65,10 @@ export default function AllSchedulesComponent() {
 
     router.replace("/login");
     return;
+  }
+
+  if (data && data.allSchedules.length < 1) {
+    return <TutorialComponent />;
   }
 
   const markedSchedules = data?.allSchedules.filter(

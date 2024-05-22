@@ -74,7 +74,7 @@ export default function NewArticlePage({
       setLoading(false);
     };
     fetchData();
-  }, []);
+  }, [slug]);
 
   async function handleFileUpload(
     event: ChangeEvent<HTMLInputElement>,
