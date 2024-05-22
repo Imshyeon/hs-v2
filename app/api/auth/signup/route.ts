@@ -1,6 +1,5 @@
 import { hashPassword } from "@/util/auth";
 import { UserModel, connectDB } from "@/util/db-util";
-import type { NextApiResponse } from "next";
 import { NextResponse } from "next/server";
 
 export async function POST(req: Request, res: Response) {

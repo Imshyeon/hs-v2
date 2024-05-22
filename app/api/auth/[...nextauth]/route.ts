@@ -3,7 +3,6 @@ import { UserModel, connectDB } from "@/util/db-util";
 import { DefaultSession } from "next-auth";
 import NextAuth from "next-auth/next";
 import CredentialsProvider from "next-auth/providers/credentials";
-import { NextResponse } from "next/server";
 
 declare module "next-auth" {
   interface Session {
@@ -59,6 +58,7 @@ const handler = NextAuth({
               user_id: user.user_id,
               name: user.name,
               email: user.email,
+              image: user.image,
             } as any) || null
           );
         } catch (error: any) {

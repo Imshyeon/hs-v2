@@ -9,7 +9,7 @@ import { useQuery } from "@tanstack/react-query";
 import { alertActions } from "@/store/alert";
 import UserProfileLoading from "@/components/detail-page/loading/user-profile-loading";
 import { Schedule } from "@/util/interfaces";
-import { redirect, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 
 // 유저 프로필 페이지
 export default function UserProfilePage() {
@@ -117,7 +117,8 @@ export async function getUserInfos() {
     console.log(resData.error);
     throw Error(resData.error);
   }
-  return resData.at(-1);
+  return resData;
+  // return resData.at(-1);
 }
 
 export async function getAllSchedulesData() {

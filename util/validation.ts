@@ -54,12 +54,11 @@ export const UserValidationSchema = Yup.object().shape({
   email: Yup.string()
     .email("이메일을 올바르게 작성해주세요.")
     .required("이메일을 작성해주세요."),
-  password: Yup.string()
-    .min(12, "12글자 이상으로 작성해주세요.")
-    .required("비밀번호를 작성해주세요."),
-  password_confirm: Yup.string()
-    .oneOf([Yup.ref("password")], "변경한 비밀번호와 일치하지 않습니다.")
-    .required("비밀번호를 작성해주세요."),
+  password: Yup.string().min(12, "12글자 이상으로 작성해주세요."),
+  password_confirm: Yup.string().oneOf(
+    [Yup.ref("password")],
+    "변경한 비밀번호와 일치하지 않습니다."
+  ),
 });
 
 export const SignUpSchema = Yup.object().shape({

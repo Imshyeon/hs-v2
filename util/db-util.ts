@@ -64,6 +64,7 @@ const profileSchema = new mongoose.Schema({
 
 const userSchema = new mongoose.Schema({
   name: String,
+  image: String,
   email: String,
   user_id: String,
   password: String,

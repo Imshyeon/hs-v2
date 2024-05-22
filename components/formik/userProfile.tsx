@@ -68,7 +68,7 @@ export default function UserProfileComponent(userData: {
     values.image = image || "";
     dispatch(profileActions.updateUserInfos({ ...values }));
     const response = await fetch("http://localhost:3000/api/user", {
-      method: "PUT",
+      method: "PATCH",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(values),
     });
@@ -156,6 +156,7 @@ export default function UserProfileComponent(userData: {
                   name="email"
                   as={Input}
                   placeholder="user@example.com"
+                  isDisabled
                 />
                 <SimpleValidationIcon
                   touched={touched.name}

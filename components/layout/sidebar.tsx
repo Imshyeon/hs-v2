@@ -8,8 +8,6 @@ import { signOut, useSession } from "next-auth/react";
 
 export default function Sidebar() {
   const { data: session, status } = useSession();
-  console.log("session=>", session);
-  console.log("status=>", status);
 
   const { data } = useQuery({
     queryKey: ["schedules"],
