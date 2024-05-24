@@ -34,7 +34,6 @@ export default function UserProfileComponent(userData: {
     password: "",
     password_confirm: "",
   };
-  console.log(initialValues);
 
   function clickUserImageHandler() {
     if (userImageRef.current) {

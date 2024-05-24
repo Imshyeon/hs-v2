@@ -54,7 +54,7 @@ export default function SignupPage() {
           onSubmit={(values: SignupValues) => {
             createUserHandler(values).then((response) => {
               if (response.ok) {
-                router.push("/");
+                router.push("/login");
               }
             });
           }}

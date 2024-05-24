@@ -89,6 +89,7 @@ const ArticleDetailPage: NextPage<MyArticlaPageProps> = ({ params }) => {
         category={data.category}
         date={data.date}
         key={data._id}
+        article={true}
         onDeleteClick={handleDeleteClick}
         onRePostClick={() => router.push(`/new/article/${slug}`)}
         onShareClick={() => console.log("share")}

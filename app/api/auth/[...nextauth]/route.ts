@@ -1,7 +1,8 @@
 import { verifyPassword } from "@/util/auth";
 import { UserModel, connectDB } from "@/util/db-util";
-import { DefaultSession } from "next-auth";
+import { DefaultSession, User } from "next-auth";
 import NextAuth from "next-auth/next";
+import { Awaitable } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 
 declare module "next-auth" {
@@ -41,7 +42,7 @@ const handler = NextAuth({
         user_id: { label: "User ID", type: "text" },
         password: { label: "Password", type: "password" },
       },
-      async authorize(credentials, req) {
+      async authorize(credentials): Promise<User | null> {
         try {
           await connectDB();
 
@@ -61,16 +62,9 @@ const handler = NextAuth({
           if (!isValid) {
             throw new Error("비밀번호가 잘못되었습니다.");
           }
+          console.log("user=>", user);
 
-          return (
-            ({
-              user_id: user.user_id,
-              name: user.name,
-              email: user.email,
-              image: user.image,
-              role: user.role,
-            } as any) || null
-          );
+          return user;
         } catch (error: any) {
           throw new Error(error.message || "로그인 실패");
         }
@@ -92,9 +86,6 @@ const handler = NextAuth({
       }
       return token;
     },
-  },
-  pages: {
-    signIn: "/login",
   },
 });
 

@@ -10,6 +10,7 @@ import { alertActions } from "@/store/alert";
 import UserProfileLoading from "@/components/detail-page/loading/user-profile-loading";
 import { Schedule } from "@/util/interfaces";
 import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
 
 // 유저 프로필 페이지
 export default function UserProfilePage() {

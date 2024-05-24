@@ -1,15 +1,19 @@
 "use client";
 import { Button } from "@nextui-org/button";
 import { Popover, PopoverContent, PopoverTrigger } from "@nextui-org/react";
+import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { useState } from "react";
 
 export default function UserActionBtn() {
   const [isOpen, setIsOpen] = useState(false);
+  const { data: session, status } = useSession();
 
   function handleClosePopover() {
     setIsOpen(false);
   }
+
+  console.log(session?.user);
 
   return (
     <Popover
@@ -42,24 +46,38 @@ export default function UserActionBtn() {
       </PopoverTrigger>
       <PopoverContent className="w-52 h-56">
         <div className="flex flex-col gap-2">
-          <Button
-            className="bg-transparent hover:text-base hover:font-bold"
-            onClick={handleClosePopover}
-          >
-            <Link href="/new/schedule">새로운 스케줄 작성하기</Link>
-          </Button>
-          <Button
-            className="bg-transparent hover:text-base hover:font-bold"
-            onClick={handleClosePopover}
-          >
-            <Link href="/new/article">새로운 Article 작성하기</Link>
-          </Button>
-          <Button
-            className="bg-transparent hover:text-base hover:font-bold"
-            onClick={handleClosePopover}
-          >
-            <Link href="/user/schedules">모든 스케줄 보기</Link>
-          </Button>
+          {status === "authenticated" && session.user.role === "user" && (
+            <Button
+              className="bg-transparent hover:text-base hover:font-bold"
+              onClick={handleClosePopover}
+            >
+              <Link href="/new/schedule">새로운 스케줄 작성하기</Link>
+            </Button>
+          )}
+          {status === "authenticated" && session.user.role === "admin" && (
+            <Button
+              className="bg-transparent hover:text-base hover:font-bold"
+              onClick={handleClosePopover}
+            >
+              <Link href="/new/article">새로운 Article 작성하기</Link>
+            </Button>
+          )}
+          {status === "authenticated" && session.user.role === "user" && (
+            <Button
+              className="bg-transparent hover:text-base hover:font-bold"
+              onClick={handleClosePopover}
+            >
+              <Link href="/user/schedules">모든 스케줄 보기</Link>
+            </Button>
+          )}
+          {status === "unauthenticated" && (
+            <Button
+              className="bg-transparent hover:text-base hover:font-bold"
+              onClick={handleClosePopover}
+            >
+              <Link href="/tutorial">Tutorial</Link>
+            </Button>
+          )}
           <Button
             className="bg-transparent hover:text-base hover:font-bold"
             onClick={handleClosePopover}
