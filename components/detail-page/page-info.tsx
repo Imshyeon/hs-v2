@@ -1,5 +1,11 @@
 "use client";
 
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+  Snippet,
+} from "@nextui-org/react";
 import { useSession } from "next-auth/react";
 
 interface DetailPageInfoProps {
@@ -8,6 +14,7 @@ interface DetailPageInfoProps {
   date: string;
   place?: string;
   article?: boolean;
+  pathname: string;
   onRePostClick: () => void;
   onDeleteClick: () => void;
   onShareClick: () => void;
@@ -18,13 +25,12 @@ export default function DetailPageInfo({
   date,
   place,
   article,
+  pathname,
   onRePostClick,
   onDeleteClick,
   onShareClick,
 }: DetailPageInfoProps) {
   const { data: session, status } = useSession();
-
-  console.log(session);
 
   const handleRePostClick = () => {
     onRePostClick(); // 이벤트 핸들러 호출
@@ -75,16 +81,29 @@ export default function DetailPageInfo({
                 </svg>
               </button>
             )}
-          <button id="schedule-share" onClick={handleShareClick}>
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 20 20"
-              fill="currentColor"
-              className="w-5 h-5 cursor-pointer"
-            >
-              <path d="M13 4.5a2.5 2.5 0 1 1 .702 1.737L6.97 9.604a2.518 2.518 0 0 1 0 .792l6.733 3.367a2.5 2.5 0 1 1-.671 1.341l-6.733-3.367a2.5 2.5 0 1 1 0-3.475l6.733-3.366A2.52 2.52 0 0 1 13 4.5Z" />
-            </svg>
-          </button>
+          <Popover backdrop="opaque">
+            <PopoverTrigger>
+              <button id="schedule-share" onClick={handleShareClick}>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                  className="w-5 h-5 cursor-pointer"
+                >
+                  <path d="M13 4.5a2.5 2.5 0 1 1 .702 1.737L6.97 9.604a2.518 2.518 0 0 1 0 .792l6.733 3.367a2.5 2.5 0 1 1-.671 1.341l-6.733-3.367a2.5 2.5 0 1 1 0-3.475l6.733-3.366A2.52 2.52 0 0 1 13 4.5Z" />
+                </svg>
+              </button>
+            </PopoverTrigger>
+            <PopoverContent className="p-2">
+              <Snippet
+                symbol=""
+                size="sm"
+                tooltipProps={{ content: "링크 복사하기" }}
+              >
+                <pre>http:localhost:3000{pathname}</pre>
+              </Snippet>
+            </PopoverContent>
+          </Popover>
         </div>
       </div>
       <div className="mt-3 flex gap-4">

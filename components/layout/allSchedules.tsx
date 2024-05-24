@@ -1,18 +1,19 @@
 "use client";
 import CardList from "@/components/ui/card-list";
 import { Select, SelectItem } from "@nextui-org/react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useState, useEffect } from "react";
 import { Schedule } from "@/util/interfaces";
 import { useQuery } from "@tanstack/react-query";
 import { alertActions } from "@/store/alert";
 import { scheduleActions } from "@/store/schedules";
 import { useRouter } from "next/navigation";
-import Tutorial from "@/app/tutorial/page";
 import TutorialComponent from "./tutorial";
+import { RootState } from "@/store";
 
 export default function AllSchedulesComponent() {
   const [order, setOrder] = useState("oldest");
+  const { schedule } = useSelector((state: RootState) => state.schedule);
   const [sortedSchedules, setSortedSchedules] = useState<Schedule[]>([]);
   const dispatch = useDispatch();
   const router = useRouter();
@@ -41,19 +42,35 @@ export default function AllSchedulesComponent() {
         );
         dispatch(scheduleActions.setAllSchedules(data));
 
-        const sorted = [...data.allSchedules].sort((a, b) => {
-          const dateA = new Date(a.created_date);
-          const dateB = new Date(b.created_date);
-          if (order === "oldest") {
-            return dateA.valueOf() - dateB.valueOf();
-          } else {
-            return dateB.valueOf() - dateA.valueOf();
-          }
-        });
-        setSortedSchedules(sorted);
+        // const sorted = [...data.allSchedules].sort((a, b) => {
+        //   const dateA = new Date(a.created_date);
+        //   const dateB = new Date(b.created_date);
+        //   if (order === "oldest") {
+        //     return dateA.valueOf() - dateB.valueOf();
+        //   } else {
+        //     return dateB.valueOf() - dateA.valueOf();
+        //   }
+        // });
+        // setSortedSchedules(sorted);
       }
     }
-  }, [isPending, order, data, dispatch]);
+  }, [isPending, data, dispatch]);
+
+  useEffect(() => {
+    if (schedule) {
+      console.log(schedule);
+      const sorted = [...schedule].sort((a, b) => {
+        const dateA = new Date(a.created_date);
+        const dateB = new Date(b.created_date);
+        if (order === "oldest") {
+          return dateA.valueOf() - dateB.valueOf();
+        } else {
+          return dateB.valueOf() - dateA.valueOf();
+        }
+      });
+      setSortedSchedules(sorted);
+    }
+  }, [schedule, order]);
 
   if (isError) {
     dispatch(
@@ -71,24 +88,7 @@ export default function AllSchedulesComponent() {
     return <TutorialComponent />;
   }
 
-  const markedSchedules = data?.allSchedules.filter(
-    (schedule) => schedule.isMarked
-  );
-
-  // useEffect(() => {
-  //   if (data) {
-  //     const sorted = [...data.allSchedules].sort((a, b) => {
-  //       const dateA = new Date(a.created_date);
-  //       const dateB = new Date(b.created_date);
-  //       if (order === "oldest") {
-  //         return dateA.valueOf() - dateB.valueOf();
-  //       } else {
-  //         return dateB.valueOf() - dateA.valueOf();
-  //       }
-  //     });
-  //     setSortedSchedules(sorted);
-  //   }
-  // }, [data, order]);
+  const markedSchedules = schedule?.filter((schedule) => schedule.isMarked);
 
   return (
     <div className="p-4 mt-2 flex flex-col gap-5">

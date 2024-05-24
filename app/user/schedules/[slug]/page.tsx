@@ -4,8 +4,7 @@ import { NextPage } from "next";
 import EntireContentList from "@/components/detail-page/content/entire-content-list";
 import DetailPageHashtag from "@/components/detail-page/page-hashtag";
 import { Schedule } from "@/util/interfaces";
-// import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useDisclosure } from "@nextui-org/react";
 import ModalComponent from "@/components/modal/modal";
 import DetailPageLoading from "@/components/detail-page/loading/detail-loading";
@@ -38,6 +37,7 @@ const ScheduleDetailPage: NextPage<MyPageProps> = ({ params }) => {
   const scheduleSlug = decodeURIComponent(params.slug);
   const { onOpen, isOpen, onClose } = useDisclosure();
   const dispatch = useDispatch();
+  const pathname = usePathname();
 
   const { data, isError, error, isPending } = useQuery({
     queryKey: ["schedules", scheduleSlug],
@@ -77,44 +77,6 @@ const ScheduleDetailPage: NextPage<MyPageProps> = ({ params }) => {
     return <DetailPageLoading />;
   }
 
-  console.log(data);
-
-  // const [scheduleData, setScheduleData] = useState<Schedule | null>(null);
-
-  // useEffect(() => {
-  //   dispatch(
-  //     alertActions.setAlertState({
-  //       status: "pending",
-  //       message: `${decodeURIComponent(params.slug)}를 불러오는 중입니다.`,
-  //     })
-  //   );
-  //   const fetchData = async () => {
-  //     try {
-  //       const data = await getDetailSchedule(scheduleSlug);
-  //       dispatch(
-  //         alertActions.setAlertState({
-  //           status: "success",
-  //           message: `${decodeURIComponent(
-  //             params.slug
-  //           )}을 성공적으로 불러왔습니다.`,
-  //         })
-  //       );
-  //       setScheduleData(data);
-  //     } catch (error) {
-  //       dispatch(
-  //         alertActions.setAlertState({ status: "failure", message: error })
-  //       );
-  //       console.error("Error fetching schedule data:", error);
-  //     }
-  //   };
-  //   fetchData();
-  // }, [scheduleSlug, dispatch, params]);
-  // console.log(scheduleData);
-
-  // if (!scheduleData) {
-  //   return <DetailPageLoading />;
-  // }
-
   const startDate = `${data?.date.start.year}-${data?.date.start.month}-${data?.date.start.day}`;
   const endDate = `${data?.date.end.year}-${data?.date.end.month}-${data?.date.end.day}`;
 
@@ -125,7 +87,7 @@ const ScheduleDetailPage: NextPage<MyPageProps> = ({ params }) => {
     onOpen();
   }
   function handleShareClick() {
-    console.log(`share ${data?.slug}`);
+    console.log(`share http://localhost:3000${pathname}`);
   }
 
   return (
@@ -166,6 +128,7 @@ const ScheduleDetailPage: NextPage<MyPageProps> = ({ params }) => {
         date={`${startDate} ~ ${endDate}`}
         key={data!._id}
         place={data!.place}
+        pathname={pathname}
         onRePostClick={handleRePostClick}
         onDeleteClick={handleDeleteClick}
         onShareClick={handleShareClick}

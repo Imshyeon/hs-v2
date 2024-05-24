@@ -23,7 +23,7 @@ export default function DetailPageContentList({
           <DetailPageContent
             key={content._id}
             id={content._id}
-            image={content.image || "/pandas.jpeg"}
+            image={content.image}
             content={content.detail}
             reference={content.reference}
           />

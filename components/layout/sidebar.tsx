@@ -5,16 +5,26 @@ import { Button } from "@nextui-org/button";
 import { Schedule } from "@/util/interfaces";
 import { useQuery } from "@tanstack/react-query";
 import { signOut, useSession } from "next-auth/react";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "@/store";
+import { useEffect } from "react";
+import { scheduleActions } from "@/store/schedules";
 
 export default function Sidebar() {
-  const { data: session, status } = useSession();
+  const { status } = useSession();
+  const { schedule } = useSelector((state: RootState) => state.schedule);
+  const dispatch = useDispatch();
 
   const { data } = useQuery({
     queryKey: ["schedules"],
     queryFn: getAllSchedulesData,
   });
 
-  const schedule = data?.allSchedules;
+  useEffect(() => {
+    if (data) {
+      dispatch(scheduleActions.setAllSchedules(data));
+    }
+  }, [dispatch, data]);
 
   const markedSchedules = schedule?.filter((schedule) => schedule.isMarked);
 

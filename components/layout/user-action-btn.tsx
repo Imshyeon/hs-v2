@@ -13,8 +13,6 @@ export default function UserActionBtn() {
     setIsOpen(false);
   }
 
-  console.log(session?.user);
-
   return (
     <Popover
       placement="top"

@@ -74,7 +74,9 @@ export default function CardList({
                 title={schedule.title}
                 category={schedule.category}
                 date={schedule.created_date}
-                image={schedule.contents[0].content[0].image || "/pandas2.jpeg"}
+                image={
+                  schedule.contents[0].content[0].image || "/defaultImg.jpg"
+                }
               />
             </article>
           );

@@ -92,7 +92,7 @@ export default function UserProfileComponent(userData: {
             <div className="relative group w-fit h-fit mb-2 hover:cursor-pointer">
               <Image
                 onClick={clickUserImageHandler}
-                src={image || "/pandas2.jpeg"}
+                src={image || "/defaultImg.jpg"}
                 alt="user-profile-img"
                 width={400}
                 height={400}

@@ -7,7 +7,7 @@ import EntireContentList from "@/components/detail-page/content/entire-content-l
 import DetailPageHashtag from "@/components/detail-page/page-hashtag";
 import { useDisclosure } from "@nextui-org/react";
 import ModalComponent from "@/components/modal/modal";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
 import { useDispatch } from "react-redux";
 import { alertActions } from "@/store/alert";
@@ -22,6 +22,7 @@ const ArticleDetailPage: NextPage<MyArticlaPageProps> = ({ params }) => {
   const { onOpen, isOpen, onClose } = useDisclosure();
   const router = useRouter();
   const dispatch = useDispatch();
+  const pathname = usePathname();
 
   const { data, isError, error, isPending } = useQuery({
     queryKey: ["articles", slug],
@@ -90,6 +91,7 @@ const ArticleDetailPage: NextPage<MyArticlaPageProps> = ({ params }) => {
         date={data.date}
         key={data._id}
         article={true}
+        pathname={pathname}
         onDeleteClick={handleDeleteClick}
         onRePostClick={() => router.push(`/new/article/${slug}`)}
         onShareClick={() => console.log("share")}

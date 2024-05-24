@@ -4,7 +4,7 @@ import { Popover, PopoverTrigger, PopoverContent } from "@nextui-org/react";
 
 interface DetailPageContentProps {
   id: string;
-  image: string;
+  image?: string;
   content: string;
   reference?: string;
 }
@@ -16,13 +16,15 @@ export default function DetailPageContent({
 }: DetailPageContentProps) {
   return (
     <div id={id} className="relative flex gap-5 items-center p-2 mb-1">
-      <Image
-        src={image}
-        alt={image}
-        width={300}
-        height={100}
-        className="rounded-tl-lg rounded-br-lg"
-      />
+      {image && (
+        <Image
+          src={image}
+          alt={image}
+          width={300}
+          height={100}
+          className="rounded-tl-lg rounded-br-lg"
+        />
+      )}
       <p>{content}</p>
       {reference ? (
         <span className="absolute right-0 bottom-0 font-light p-2 text-slate-500 flex gap-1 items-center hover:text-slate-800 cursor-pointer dark:hover:text-white">

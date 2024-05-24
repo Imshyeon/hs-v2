@@ -1,7 +1,5 @@
 "use client";
 
-// 참고 : https://codesandbox.io/p/sandbox/formik-fieldarray-materialui-f7rkz?file=%2Fsrc%2Fform.js%3A79%2C28
-
 import slugify from "slugify";
 import { useRouter } from "next/navigation";
 import { NewSchedule } from "@/util/interfaces";
