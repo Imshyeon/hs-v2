@@ -41,17 +41,6 @@ export default function AllSchedulesComponent() {
           })
         );
         dispatch(scheduleActions.setAllSchedules(data));
-
-        // const sorted = [...data.allSchedules].sort((a, b) => {
-        //   const dateA = new Date(a.created_date);
-        //   const dateB = new Date(b.created_date);
-        //   if (order === "oldest") {
-        //     return dateA.valueOf() - dateB.valueOf();
-        //   } else {
-        //     return dateB.valueOf() - dateA.valueOf();
-        //   }
-        // });
-        // setSortedSchedules(sorted);
       }
     }
   }, [isPending, data, dispatch]);

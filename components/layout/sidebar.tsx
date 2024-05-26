@@ -32,7 +32,7 @@ export default function Sidebar() {
     ?.filter((schedule) => !schedule.isMarked)
     .slice(0, 4);
   return (
-    <nav className="flex flex-col flex-grow-0 flex-shrink relative w-60 text-center p-8 bg-layout-sidebar-default z-10 dark:bg-zinc-900">
+    <nav className="max-md:hidden 2xl:w-1/6 flex flex-col flex-grow-0 flex-shrink relative w-60 text-center p-8 bg-layout-sidebar-default z-10 dark:bg-zinc-900">
       <SidebarLinkBtn />
       <ul className="flex flex-col gap-5 mt-8">
         {markedSchedules &&

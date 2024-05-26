@@ -65,7 +65,6 @@ export default function NewSchedulePage() {
   }
 
   async function handleSubmit(values: NewSchedule) {
-    console.log(values);
     const slug = slugify(values.title, {
       replacement: "-", // 제거된 문자 대신 '-' 사용
       remove: /[*+~.()'"!:@]/g,
@@ -85,10 +84,8 @@ export default function NewSchedulePage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ ...values, slug: slug }),
       })) as RequestInit;
-      console.log(response);
       router.push(`/user/schedules/${slug}`);
     } catch (err: any) {
-      console.log(err);
       throw Error("새로운 스케줄을 생성하는데 실패했습니다.", err);
     }
   }
